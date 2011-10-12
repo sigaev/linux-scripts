@@ -3,6 +3,8 @@
 	git clone -n $git etc
 	git clone $git/scripts/.git etc/.git/scripts
 	echo \* >>etc/.git/info/exclude
+	mv etc/.git/hooks/post-update{.sample,}
+	mv etc/.git/scripts/.git/hooks/post-update{.sample,}
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $portage | tar xJpC var
 	ln -sfn `readlink etc/make.profile | sed s/usr/var/` etc/make.profile

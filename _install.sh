@@ -1,10 +1,8 @@
 (
 	cd $mount
 	git clone -n $git etc
-	mkdir etc/.git/scripts
+	git clone $git/scripts/.git etc/.git/scripts
 	echo \* >>etc/.git/info/exclude
-	git clone --bare {$git,etc/.git}/scripts/.git
-	(cd etc/.git/scripts && git reset --hard)
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $portage | tar xJpC var
 	ln -sfn `readlink etc/make.profile | sed s/usr/var/` etc/make.profile

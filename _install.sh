@@ -1,4 +1,5 @@
 (
+	umask 022
 	cd $mount
 	git clone -n $git etc
 	git clone $git/scripts/.git etc/.git/scripts
@@ -15,5 +16,6 @@
 	chroot . /bin/bash etc/.git/scripts/_gentoo.sh
 	umount dev{/pts,/shm,} proc
 ) >$mount/out 2>$mount/err
+mount -roremount $mount
 umount $mount
 shutdown -h now

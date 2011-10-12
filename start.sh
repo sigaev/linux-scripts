@@ -11,7 +11,7 @@ sudo mount $disk $mount || exit 1
 (
 	cd /tmp
 	rm -f _install.sh
-	wget -q $git/info/_install.sh
+	wget -q $git/scripts/_install.sh
 	sudo disk=$disk mount=$mount stage3=$stage3 portage=$portage git=$git \
 		setsid nohup bash _install.sh </dev/null >/dev/null 2>&1 &
 )

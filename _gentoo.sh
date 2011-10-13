@@ -1,38 +1,38 @@
+umask 022
 cd etc
 
-git reset origin/stage3
-git commit -amAuto-update
-git branch prev-stage3
+for i in {,patch-}{stage3,emerged}; do
+	git branch $i origin/$i
+done
 
-git rebase --onto {prev-,origin/{,patch-}}stage3 || exit 1
-git branch patch-stage3
+patch() {
+	git reset $1
+	[[ Auto-update == `git log -n1 --pretty=format:%f` ]] && git diff HEAD^ --quiet && git reset HEAD^
+	git commit -amAuto-update
+	git checkout -B $1
+	git rebase --onto $1 origin/$1 patch-$1 || exit 1
+}
+
+patch stage3
 
 emerge -e world || exit 1
 
-git checkout -b {,prev-}stage3
+git checkout stage3 || exit 1
 
 find -name ._cfg\* | while read e; do
 	mv "$e" "`sed s/^._cfg[0-9]*_// <<<$e`"
 done
 
 git commit -amAuto-update
-git rebase --onto {,prev-,patch-}stage3 || exit 1
-git branch -f patch-stage3
-git branch -d prev-stage3
+git rebase --onto stage3 master patch-stage3 || exit 1
+git rebase --onto patch-stage3 origin/patch-stage3 emerged || exit 1
+git checkout -B master patch-stage3
 
-git rebase --onto {,origin/}patch-stage3 origin/emerged || exit 1
-git branch -f master
-git checkout -b emerged patch-stage3
+emerge $(<.git/scripts/world) || exit 1
 
-emerge $(<.git/info/world) || exit 1
+patch emerged
 
-git reset master
-git commit -amAuto-update
-
-git rebase --onto {,origin/{,patch-}}emerged || exit 1
-git branch patch-emerged
 git checkout -B master
-
 for i in . .git/scripts; do
 (
 	cd $i

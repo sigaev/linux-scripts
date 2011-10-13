@@ -28,7 +28,7 @@ git rebase --onto stage3 master patch-stage3 || exit 1
 git rebase --onto patch-stage3 origin/patch-stage3 emerged || exit 1
 git checkout -B master patch-stage3
 
-emerge $(<.git/scripts/world) || exit 1
+emerge -n $(<.git/scripts/world) || exit 1
 
 patch emerged
 

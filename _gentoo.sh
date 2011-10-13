@@ -24,7 +24,7 @@ find -name ._cfg\* | while read e; do
 done
 
 git commit -amAuto-update
-git rebase --onto stage3 master patch-stage3 || exit 1
+git rebase stage3 patch-stage3 || exit 1
 git rebase --onto patch-stage3 origin/patch-stage3 emerged || exit 1
 git checkout -B master patch-stage3
 

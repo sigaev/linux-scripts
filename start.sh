@@ -6,6 +6,7 @@ git=http://sigaev.com/about/laptop/.git
 prg=\
 http://sigaev.com/programs/cryptmount/.git \
 http://sigaev.com/programs/fonts-windows/.git \
+http://sigaev.com/programs/switch-root/.git \
 
 which git || sudo yum -y install git
 sudo mkfs.ext4 -m0 $disk

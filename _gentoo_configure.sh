@@ -8,7 +8,7 @@ cat <<EOF >>sudoers
 Defaults:sigaev	env_keep=MC_FORMAT
 sigaev	ALL=NOPASSWD:/usr/local/sbin/mount-crypt.sh,/usr/local/sbin/umount-crypt.sh,/sbin/reboot
 EOF
-
+for i in wheel audio video; do gpasswd -a sigaev $i; done
 (cd init.d; ln -sfn net.lo net.eth0)
 for i in dbus metalog acpid cryptmount cryptnmount ntpd net.eth0; do
 	rc-update add $i default
@@ -16,3 +16,4 @@ done
 for i in lvm dmcrypt consolefont alsasound; do
 	rc-update add $i boot
 done
+rc-update delete mtab boot

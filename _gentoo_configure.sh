@@ -1,6 +1,7 @@
 cp ../usr/share/zoneinfo/America/New_York localtime
 ln -sfn /proc/self/mounts mtab
 mkdir -m700 ../var/root
+mkdir -m755 ../mnt/crypt
 sed -i 's/:\/root:/:\/var\/root:/' passwd
 echo 'sigaev:x:1000:100:Dmitry Sigaev:/home/sigaev:/bin/bash' >>passwd
 echo 'sigaev:*:10770:0:::::' >>shadow

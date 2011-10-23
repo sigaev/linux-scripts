@@ -12,7 +12,7 @@ for i in wheel audio video plugdev; do gpasswd -a sigaev $i; done
 for i in dbus metalog acpid cryptmount cryptnmount ntpd net.eth0; do
 	rc-update add $i default
 done
-for i in lvm dmcrypt consolefont alsasound; do
+for i in dmcrypt consolefont alsasound; do
 	rc-update add $i boot
 done
 rc-update delete mtab boot

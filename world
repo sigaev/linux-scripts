@@ -11,8 +11,8 @@ net-misc/ntp
 sys-apps/pmount
 sys-devel/distcc
 sys-fs/cryptsetup
-sys-fs/lvm2
 sys-fs/reiserfsprogs
+sys-fs/squashfs-tools
 sys-power/acpi
 sys-power/acpid
 virtual/jdk

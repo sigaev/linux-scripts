@@ -1,6 +1,7 @@
+umask 022
+mkdir $mount/root
 (
-	umask 022
-	cd $mount
+	cd $mount/root
 	git clone -n $git etc
 	git clone $git/scripts/.git etc/.git/scripts
 	echo \* >>etc/.git/info/exclude
@@ -14,6 +15,12 @@
 	chroot . /bin/bash etc/.git/scripts/_gentoo_emerge.sh
 	umount dev{/pts,/shm,} proc
 ) >$mount/out 2>$mount/err
+(
+	cd $mount
+	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz && rm -f $i; done
+	LD_LIBRARY_PATH=root/lib:root/usr/lib \
+		root/usr/bin/mksquashfs root `date +%Y-%m-%d`.sfs -comp xz >>out 2>>err
+)
 mount -roremount $mount
 umount $mount
 shutdown -h now

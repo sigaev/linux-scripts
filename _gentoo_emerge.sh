@@ -44,4 +44,9 @@ done
 . .git/scripts/_gentoo_programs.sh
 . .git/scripts/_gentoo_configure.sh
 
-echo Ok.
+rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
+
+cat <<EOF
+Things that MUST be done:
+	* save /etc/.git
+EOF

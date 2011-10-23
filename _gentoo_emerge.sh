@@ -48,5 +48,5 @@ rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
 
 cat <<EOF
 Things that MUST be done:
-	* save /etc/.git
+	* save /etc/.git if its HEAD differs from the master copy's HEAD
 EOF

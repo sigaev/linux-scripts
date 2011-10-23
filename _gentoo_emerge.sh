@@ -20,7 +20,7 @@ emerge -e world || exit 1
 git checkout stage3 || exit 1
 
 find -name ._cfg\* | while read e; do
-	mv "$e" "`sed s/^._cfg[0-9]*_// <<<$e`"
+	mv "$e" "`sed s/._cfg[0-9]*_// <<<$e`"
 done
 
 git commit -amAuto-update

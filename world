@@ -2,6 +2,7 @@ app-admin/metalog
 app-admin/sudo
 app-crypt/gnupg
 app-editors/vim
+app-emulation/virtualbox-bin
 app-portage/gentoolkit
 app-text/evince
 media-sound/alsa-utils

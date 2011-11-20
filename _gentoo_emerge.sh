@@ -48,7 +48,23 @@ done
 
 rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
 
-cat <<EOF
+if [[ `git log -n1 --pretty=format:%H` != `git log -n1 --pretty=format:%H origin/master` ]]; then
+(
+	mkdir ../tmp/a
+	cd ../tmp/a || exit 1
+	cp -a "$OLDPWD/.git" .
+	git reset --hard
+	tar cJf ../a.txz --owner=sigaev --group=users .
+	cd .. && rm -fr a && chown sigaev:users a.txz
+)
+fi
+diff -u ../{etc/.git/scripts,var/lib/portage}/world 1>&2
+cat 1>&2 <<EOF
 Things that MUST be done:
-	* save /etc/.git if its HEAD differs from the master copy's HEAD
+	* pay attention to the above diff (if any), consider updating $git/scripts/world
+	* examine the diff of /var/log/install.{out,err}.xz and previous versions
+	* same with /etc/{passwd,group}
+EOF
+[[ -e ../tmp/a.txz ]] && cat 1>&2 <<EOF
+	* update ${git%.git} with /tmp/a.txz
 EOF

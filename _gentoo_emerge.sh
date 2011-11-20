@@ -55,8 +55,8 @@ if [[ `git log -n1 --pretty=format:%H` != `git log -n1 --pretty=format:%H origin
 	cd ../tmp/a || exit 1
 	cp -a "$OLDPWD/.git" .
 	git reset --hard
-	tar cJf ../a.txz --owner=sigaev --group=users .
-	cd .. && rm -fr a && chown sigaev:users a.txz
+	tar cJf ../a.txz --owner=$user --group=users .
+	cd .. && rm -fr a && chown $user:users a.txz
 )
 fi
 diff -u ../{etc/.git/scripts,var/lib/portage}/world 1>&2

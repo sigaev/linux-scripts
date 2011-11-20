@@ -40,6 +40,7 @@ for i in . .git/scripts; do
 	cd $i
 	git gc --aggressive --prune=2020
 	git update-server-info
+	git status
 )
 done
 

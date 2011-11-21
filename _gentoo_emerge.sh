@@ -46,6 +46,7 @@ done
 
 . .git/scripts/_gentoo_programs.sh
 . .git/scripts/_gentoo_configure.sh
+. .git/scripts/_gentoo_bugs.sh
 
 rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
 

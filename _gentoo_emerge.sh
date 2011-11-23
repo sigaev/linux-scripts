@@ -48,8 +48,8 @@ git branch -D origin-root root
 
 patches emerge patch
 
-git branch -f master $arch
-git rebase patch master || exit 1
+git checkout -B master
+git merge $arch || exit 1
 for i in . .git/scripts; do
 (
 	cd $i

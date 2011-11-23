@@ -1,7 +1,8 @@
 umask 022
 cd etc
 
-for i in stage3 emerge $arch patch; do
+git branch -a | sed -n '/remotes.origin/{s/  remotes.origin.//;p}' \
+	| grep -v master$ | while read i; do
 	git branch $i origin/$i
 done
 

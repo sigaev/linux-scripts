@@ -2,8 +2,7 @@ umask 022
 cd etc
 
 branches() {
-	git branch -a | sed -n '/remotes.origin/{s/  remotes.origin.//;p}' \
-		| grep -v master$ | grep -vxf<(tr , \\n <<<$1)
+	git branch -r | egrep -v 'origin/(HEAD|master)' | cut -d/ -f2 | grep -vxf<(tr , \\n <<<$1)
 }
 
 branches | while read i; do

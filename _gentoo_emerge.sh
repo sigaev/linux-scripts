@@ -5,6 +5,8 @@ git branch -a | sed -n '/remotes.origin/{s/  remotes.origin.//;p}' \
 	| grep -v master$ | while read i; do
 	git branch $i origin/$i
 done
+git branch root `git merge-base $arch emerge`
+git branch origin-root root
 
 patch() {
 	git reset $1
@@ -14,28 +16,36 @@ patch() {
 	git rebase --onto $1 origin/$1 $2 || exit 1
 }
 
-patch stage3 $arch
+patch stage3 root
+git rebase --onto root origin-root $arch || exit 1
 
 emerge -e world || exit 1
 
 git checkout stage3 || exit 1
+git branch -f $arch origin/$arch
 
 find -name ._cfg\* | while read e; do
 	mv "$e" "`sed s/._cfg[0-9]*_// <<<$e`"
 done
 
 git commit -amAuto-update
-git rebase stage3 $arch || exit 1
-git rebase --onto $arch origin/$arch emerge || exit 1
+git rebase stage3 root || exit 1
+for i in emerge-plus-arches; do
+	git rebase --onto root origin-root $i || exit 1
+done
 git checkout -B master $arch
 
 groupadd -g 999 vboxusers
 
 emerge -n $(<.git/scripts/world) || exit 1
 
+git diff master root | git apply
+git branch -D origin-root root
+
 patch emerge patch
 
-git checkout -B master
+git branch -f master $arch
+git rebase patch master || exit 1
 for i in . .git/scripts; do
 (
 	cd $i

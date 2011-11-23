@@ -1,7 +1,7 @@
 umask 022
 cd etc
 
-for i in {,patch-}{stage3,emerged}; do
+for i in {,patch-}{stage3,emerge}; do
 	git branch $i origin/$i
 done
 
@@ -25,14 +25,14 @@ done
 
 git commit -amAuto-update
 git rebase stage3 patch-stage3 || exit 1
-git rebase --onto patch-stage3 origin/patch-stage3 emerged || exit 1
+git rebase --onto patch-stage3 origin/patch-stage3 emerge || exit 1
 git checkout -B master patch-stage3
 
 groupadd -g 999 vboxusers
 
 emerge -n $(<.git/scripts/world) || exit 1
 
-patch emerged
+patch emerge
 
 git checkout -B master
 for i in . .git/scripts; do

@@ -1,7 +1,7 @@
 umask 022
 cd etc
 
-for i in {,patch-}{stage3,emerge}; do
+for i in stage3 emerge $arch patch; do
 	git branch $i origin/$i
 done
 
@@ -10,10 +10,10 @@ patch() {
 	[[ Auto-update == `git log -n1 --pretty=format:%f` ]] && git diff HEAD^ --quiet && git reset HEAD^
 	git commit -amAuto-update
 	git checkout -B $1
-	git rebase --onto $1 origin/$1 patch-$1 || exit 1
+	git rebase --onto $1 origin/$1 $2 || exit 1
 }
 
-patch stage3
+patch stage3 $arch
 
 emerge -e world || exit 1
 
@@ -24,15 +24,15 @@ find -name ._cfg\* | while read e; do
 done
 
 git commit -amAuto-update
-git rebase stage3 patch-stage3 || exit 1
-git rebase --onto patch-stage3 origin/patch-stage3 emerge || exit 1
-git checkout -B master patch-stage3
+git rebase stage3 $arch || exit 1
+git rebase --onto $arch origin/$arch emerge || exit 1
+git checkout -B master $arch
 
 groupadd -g 999 vboxusers
 
 emerge -n $(<.git/scripts/world) || exit 1
 
-patch emerge
+patch emerge patch
 
 git checkout -B master
 for i in . .git/scripts; do

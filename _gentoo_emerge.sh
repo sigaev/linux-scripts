@@ -1,14 +1,18 @@
 umask 022
 cd etc
 
-git branch -a | sed -n '/remotes.origin/{s/  remotes.origin.//;p}' \
-	| grep -v master$ | while read i; do
+branches() {
+	git branch -a | sed -n '/remotes.origin/{s/  remotes.origin.//;p}' \
+		| grep -v master$ | grep -vxf<(tr , \\n <<<$1)
+}
+
+branches | while read i; do
 	git branch $i origin/$i
 done
 git branch root `git merge-base $arch emerge`
 git branch origin-root root
 
-patch() {
+patches() {
 	git reset $1
 	[[ Auto-update == `git log -n1 --pretty=format:%f` ]] && git diff HEAD^ --quiet && git reset HEAD^
 	git commit -amAuto-update
@@ -16,7 +20,7 @@ patch() {
 	git rebase --onto $1 origin/$1 $2 || exit 1
 }
 
-patch stage3 root
+patches stage3 root
 git rebase --onto root origin-root $arch || exit 1
 
 emerge -e world || exit 1
@@ -30,7 +34,7 @@ done
 
 git commit -amAuto-update
 git rebase stage3 root || exit 1
-for i in emerge-plus-arches; do
+branches stage3,patch | while read i; do
 	git rebase --onto root origin-root $i || exit 1
 done
 git checkout -B master $arch
@@ -42,7 +46,7 @@ emerge -n $(<.git/scripts/world) || exit 1
 git diff master root | git apply
 git branch -D origin-root root
 
-patch emerge patch
+patches emerge patch
 
 git branch -f master $arch
 git rebase patch master || exit 1

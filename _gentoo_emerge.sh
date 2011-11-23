@@ -64,12 +64,12 @@ done
 
 rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
 
-if [[ `git log -n1 --pretty=format:%H` != `git log -n1 --pretty=format:%H origin/master` ]]; then
+if [[ `git log -n1 --pretty=format:%H patch` != `git log -n1 --pretty=format:%H origin/patch` ]]; then
 (
 	mkdir ../tmp/a
 	cd ../tmp/a || exit 1
 	cp -a "$OLDPWD/.git" .
-	git reset --hard
+	git reset --hard patch
 	tar cJf ../a.txz --owner=$user --group=users .
 	cd .. && rm -fr a && chown $user:users a.txz
 )

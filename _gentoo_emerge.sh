@@ -40,7 +40,7 @@ git checkout -B master $arch
 
 groupadd -g 999 vboxusers
 
-emerge -n $(<.git/scripts/world) || exit 1
+DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
 
 git diff master root | git apply
 git branch -D origin-root root

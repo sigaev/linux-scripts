@@ -20,4 +20,5 @@ done
 for i in dmcrypt consolefont alsasound; do
 	rc-update add $i boot
 done
+rc-update add first sysinit
 rc-update delete mtab boot

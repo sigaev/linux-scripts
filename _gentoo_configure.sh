@@ -12,7 +12,7 @@ mount -r /opt/VirtualBox/additions/VBoxGuestAdditions.iso /mnt
 /mnt/VBoxLinuxAdditions.run
 umount /mnt
 mv X11/xorg.conf{,~}
-for i in wheel audio video plugdev vboxusers; do gpasswd -a $user $i; done
+for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done
 (cd init.d; ln -sfn net.lo net.eth0)
 for i in dbus metalog acpid cryptmount cryptnmount ntpd net.eth0; do
 	rc-update add $i default

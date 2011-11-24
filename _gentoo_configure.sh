@@ -8,6 +8,19 @@ cat <<EOF >>sudoers
 Defaults:$user	env_keep=MC_FORMAT
 $user	ALL=NOPASSWD:/usr/local/sbin/mount-crypt.sh,/usr/local/sbin/umount-crypt.sh,/sbin/reboot,/sbin/shutdown,/bin/passwd
 EOF
+cat <<EOF >local.d/90user.start
+#!/bin/bash
+if [[ ! -e /home/$user ]] && mkdir -m755 /home/$user; then
+	cd /home/$user
+	chown $user:users .
+	su -c '
+		for i in \`wget -qO- $cfg/Makefile | grep list= | cut -d= -f2\`; do
+			wget -qO- $cfg/\$i.txz | tar xJ
+		done
+	' - $user
+fi
+EOF
+chmod +x local.d/90user.start
 mount -r /opt/VirtualBox/additions/VBoxGuestAdditions.iso /mnt
 /mnt/VBoxLinuxAdditions.run
 umount /mnt

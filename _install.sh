@@ -21,7 +21,7 @@ mkdir $mount/root
 	cd $mount
 	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz && rm -f $i; done
 	LD_LIBRARY_PATH=root/lib:root/usr/lib \
-		root/usr/bin/mksquashfs root `date +%Y-%m-%d`.sfs -comp xz >>out 2>>err
+		root/usr/bin/mksquashfs root `date +%Y-%m-%d`-$arch.sfs -comp xz >>out 2>>err
 )
 mount -roremount $mount
 umount $mount

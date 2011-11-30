@@ -6,6 +6,7 @@ mkdir $mount/root
 	git clone $git/scripts/.git etc/.git/scripts
 	echo \* >>etc/.git/info/exclude
 	echo /config >>etc/.git/scripts/.git/info/exclude
+	cp /dev/shm/config etc/.git/scripts
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $portage | tar xJpC var
 	ln -sfn `readlink etc/make.profile | sed s/usr/var/` etc/make.profile

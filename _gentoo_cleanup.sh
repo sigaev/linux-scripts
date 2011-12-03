@@ -14,6 +14,15 @@ if [[ `git log -n1 --pretty=format:%H patch` != `git log -n1 --pretty=format:%H 
 	mkdir ../tmp/a
 	cd ../tmp/a || exit 1
 	cp -a "$OLDPWD/.git" .
+	for i in . .git/scripts; do
+	(
+		cd $i
+		git remote set-head origin -d
+		git branch -r | xargs git branch -rd
+		git update-server-info
+		git status
+	)
+	done
 	git reset --hard patch
 	tar cJf ../a.txz --owner=$user --group=users .
 	cd .. && rm -fr a && chown $user:users a.txz

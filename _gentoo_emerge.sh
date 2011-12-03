@@ -1,6 +1,9 @@
 umask 022
 cd etc
 
+diff -u <(git grep -h ^CHOST= origin/$arch make.conf) <(grep ^CHOST= make.conf) || exit 1
+rm -f make.conf
+
 branches() {
 	git branch -r | egrep -v 'origin/(HEAD|master)' | cut -d/ -f2 | grep -vxf<(tr , \\n <<<$1)
 }

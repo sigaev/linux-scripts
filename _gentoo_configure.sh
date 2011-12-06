@@ -23,8 +23,8 @@ start() {
 		ebegin "Downloading settings from the web"
 		chown $user:users /home/$user
 		su -c '
-			wget -qO- $cfg/Makefile | grep list= | cut -d= -f2 | tr \\  \\\n \
-				| sed s,$,.txz, | wget -qO- -B$cfg/ -i- | tar xiJ
+			wget -T9 -t3 -qO- $cfg/Makefile | grep list= | cut -d= -f2 | tr \\  \\\n \
+				| sed s,$,.txz, | wget -T9 -t3 -qO- -B$cfg/ -i- | tar xiJ
 		' - $user
 		rmdir /home/$user 2>/dev/null
 		eend \$((! \$?)) "Failed to download settings from the web"
@@ -38,7 +38,7 @@ umount /mnt
 mv X11/xorg.conf{,~}
 for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done
 (cd init.d; ln -sfn net.lo net.eth0; ln -sfn net.lo net.wlan0)
-for i in dbus metalog acpid cryptmount cryptnmount last ntpd net.eth0 net.wlan0 sshd; do
+for i in dbus metalog acpid cryptmount cryptnmount last ntpd net.eth0 net.wlan0 allnet sshd; do
 	rc-update add $i default
 done
 for i in dmcrypt consolefont alsasound; do

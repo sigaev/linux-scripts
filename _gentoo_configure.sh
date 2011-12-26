@@ -1,6 +1,6 @@
 cp ../usr/share/zoneinfo/America/New_York localtime
 ln -sfn /proc/self/mounts mtab
-ln -sfn ../boot ../lib/firmware
+ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules
 ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
 mkdir -m755 ../mnt/crypt

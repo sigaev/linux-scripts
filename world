@@ -5,6 +5,7 @@ app-editors/vim
 app-emulation/virtualbox-bin
 app-portage/gentoolkit
 app-text/evince
+dev-lang/R
 media-sound/alsa-utils
 media-video/mplayer
 net-misc/dhcpcd

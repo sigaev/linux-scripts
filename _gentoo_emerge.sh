@@ -1,4 +1,5 @@
 umask 022
+export COLUMNS=96
 cd etc
 
 diff -u <(git grep -h ^CHOST= origin/$arch make.conf) <(grep ^CHOST= make.conf) || exit 1

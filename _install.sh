@@ -14,7 +14,9 @@ mkdir $mount/root
 
 	mount -t proc{,,}
 	mount -R {/,}dev
+	[[ x86_64 == `uname -m` ]] && mount -t tmpfs{,} var/tmp
 	chroot . /bin/bash etc/.git/scripts/_gentoo_emerge.sh
+	mountpoint -q var/tmp && umount var/tmp
 	umount dev{/pts,/shm,} proc
 ) >$mount/out 2>$mount/err
 (

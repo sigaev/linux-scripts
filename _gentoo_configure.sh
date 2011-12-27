@@ -31,9 +31,14 @@ start() {
 	fi
 }
 EOF
-chmod +x init.d/last
+bits=`file /bin/bash | grep 64`
+cat >/tmp/uname <<EOF
+#!/bin/bash
+[[ -m == "\$@" ]] && echo x86${bits:+_64} || exec `which uname` "\$@"
+EOF
+chmod +x init.d/last /tmp/uname
 mount -r /opt/VirtualBox/additions/VBoxGuestAdditions.iso /mnt
-/mnt/VBoxLinuxAdditions.run
+PATH=/tmp:$PATH /mnt/VBoxLinuxAdditions.run
 umount /mnt
 mv X11/xorg.conf{,~}
 for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done

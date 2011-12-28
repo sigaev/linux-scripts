@@ -8,6 +8,7 @@ app-text/evince
 dev-lang/R
 media-sound/alsa-utils
 media-video/mplayer
+net-im/skype
 net-misc/dhcpcd
 net-misc/ntp
 net-wireless/wpa_supplicant

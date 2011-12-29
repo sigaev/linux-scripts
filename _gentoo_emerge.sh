@@ -27,6 +27,7 @@ patches stage3 root
 git rebase --onto root origin-root $arch || exit 1
 
 emerge -e world || exit 1
+emerge -c || exit 1
 
 git checkout stage3 || exit 1
 git branch -f $arch origin/$arch

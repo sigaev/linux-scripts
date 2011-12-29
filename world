@@ -1,6 +1,7 @@
 app-admin/metalog
 app-admin/sudo
 app-crypt/gnupg
+app-editors/nano
 app-editors/vim
 app-emulation/virtualbox-bin
 app-portage/gentoolkit
@@ -13,6 +14,7 @@ net-misc/dhcpcd
 net-misc/ntp
 net-wireless/wpa_supplicant
 sys-apps/hdparm
+sys-apps/less
 sys-apps/pmount
 sys-boot/grub:2
 sys-devel/distcc

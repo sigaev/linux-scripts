@@ -18,6 +18,7 @@ sys-apps/less
 sys-apps/pmount
 sys-boot/grub:2
 sys-devel/distcc
+sys-fs/btrfs-progs
 sys-fs/cryptsetup
 sys-fs/dosfstools
 sys-fs/reiserfsprogs

@@ -7,8 +7,9 @@ app-emulation/virtualbox-bin
 app-portage/gentoolkit
 app-text/evince
 dev-lang/R
+media-gfx/dcraw
 media-sound/alsa-utils
-media-video/mplayer
+media-video/mplayer2
 net-im/skype
 net-misc/dhcpcd
 net-misc/ntp

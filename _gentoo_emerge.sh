@@ -31,31 +31,32 @@ configs() {
 }
 
 patches stage3 root
-git rebase --onto root origin-root $arch || exit 1
+git branch -f _ $arch
+git rebase --onto root origin-root _ || exit 1
 
 emerge -e world || exit 1
 emerge -c || exit 1
 
 git checkout stage3 || exit 1
-git branch -f $arch origin/$arch
 
 configs
 git commit -amAuto-update
 git rebase stage3 root || exit 1
-branches stage3,master | while read i; do
-	git rebase --onto root origin-root $i || exit 1
-done
-git checkout -B _ $arch
+git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 
 DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
 
 git diff _ root | git apply
-
 configs
 patches root master
 
+branches stage3,master | while read i; do
+	git rebase --onto root origin-root $i || exit 1
+done
+
+git checkout master || exit 1
 git branch -D origin-root root _
 git merge $arch || exit 1
 

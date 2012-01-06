@@ -24,6 +24,11 @@ patches() {
 	git checkout -B $1
 	git rebase --onto $1 origin/$1 $2 || exit 1
 }
+configs() {
+	find -name ._cfg\* | while read e; do
+		mv "$e" "`sed s/._cfg[0-9]*_// <<<$e`"
+	done
+}
 
 patches stage3 root
 git rebase --onto root origin-root $arch || exit 1
@@ -34,10 +39,7 @@ emerge -c || exit 1
 git checkout stage3 || exit 1
 git branch -f $arch origin/$arch
 
-find -name ._cfg\* | while read e; do
-	mv "$e" "`sed s/._cfg[0-9]*_// <<<$e`"
-done
-
+configs
 git commit -amAuto-update
 git rebase stage3 root || exit 1
 branches stage3,master | while read i; do
@@ -51,6 +53,7 @@ DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
 
 git diff _ root | git apply
 
+configs
 patches root master
 
 git branch -D origin-root root _

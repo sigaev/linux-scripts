@@ -6,13 +6,15 @@ diff -u <(git grep -h ^CHOST= origin/$arch make.conf) <(grep ^CHOST= make.conf) 
 rm -f make.conf
 
 branches() {
-	git branch -r | egrep -v 'origin/(HEAD|master)' | cut -d/ -f2 | grep -vxf<(tr , \\n <<<$1)
+	git branch -r | cut -d/ -f2 | grep -vxf<(tr , \\n <<<$1)
 }
 
+git remote set-head origin -d
+git branch -m master _
 branches | while read i; do
 	git branch $i origin/$i
 done
-git branch root `git merge-base $arch emerge`
+git branch root `git merge-base $arch master`
 git branch origin-root root
 
 patches() {
@@ -38,21 +40,20 @@ done
 
 git commit -amAuto-update
 git rebase stage3 root || exit 1
-branches stage3,patch | while read i; do
+branches stage3,master | while read i; do
 	git rebase --onto root origin-root $i || exit 1
 done
-git checkout -B master $arch
+git checkout -B _ $arch
 
 groupadd -g 999 vboxusers
 
 DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
 
-git diff master root | git apply
-git branch -D origin-root root
+git diff _ root | git apply
 
-patches emerge patch
+patches root master
 
-git checkout -B master
+git branch -D origin-root root _
 git merge $arch || exit 1
 
 env-update

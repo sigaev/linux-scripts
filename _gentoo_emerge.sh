@@ -15,7 +15,7 @@ branches | while read i; do
 	git branch $i origin/$i
 done
 git branch root `git merge-base $arch master`
-git branch origin-root root
+git branch origin/root root
 
 patches() {
 	git reset $1
@@ -32,7 +32,7 @@ configs() {
 
 patches stage3 root
 git branch -f _ $arch
-git rebase --onto root origin-root _ || exit 1
+git rebase --onto root origin/root _ || exit 1
 
 emerge -e world || exit 1
 emerge -c || exit 1
@@ -53,11 +53,11 @@ configs
 patches root master
 
 branches stage3,master | while read i; do
-	git rebase --onto root origin-root $i || exit 1
+	git rebase --onto root origin/root $i || exit 1
 done
 
 git checkout master || exit 1
-git branch -D origin-root root _
+git branch -D origin/root root _
 git merge $arch || exit 1
 
 env-update

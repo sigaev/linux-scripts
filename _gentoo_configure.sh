@@ -3,7 +3,7 @@ ln -sfn /proc/self/mounts mtab
 ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules
 ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
-mkdir -m755 ../mnt/crypt ../usr/local/cuda
+mkdir -m755 ../mnt/crypt ../opt/cuda
 echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:1000:100:$name:/home/$user:/bin/bash" >>passwd
 echo -e "ubuntu:!:10770:0:::::\n$user::10770:0:::::" >>shadow
 cat <<EOF >>sudoers
@@ -38,7 +38,7 @@ ${bits:+i386} /mnt/VBoxLinuxAdditions.run
 umount /mnt
 mv X11/xorg.conf{,~}
 emerge -f nvidia-cuda-toolkit
-sh /var/portage/distfiles/cudatoolkit*.run --nox11 -- --prefix=/usr/local/cuda
+sh /var/portage/distfiles/cudatoolkit*.run --nox11 -- --prefix=/opt/cuda
 for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done
 (cd init.d; ln -sfn net.lo net.eth0; ln -sfn net.lo net.wlan0)
 for i in dbus metalog acpid cryptmount cryptnmount last ntpd net.eth0 net.wlan0 allnet sshd; do

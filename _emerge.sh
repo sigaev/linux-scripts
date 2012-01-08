@@ -46,6 +46,7 @@ git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 
+. .git/scripts/_programs.sh
 true >portage/profile/package.provided
 emerge -f nvidia-cuda-toolkit
 git checkout portage/profile/package.provided
@@ -67,7 +68,6 @@ git merge $arch || exit 1
 
 env-update
 
-. .git/scripts/_programs.sh
 . .git/scripts/_configure.sh
 . .git/scripts/_bugs.sh
 . .git/scripts/_cleanup.sh

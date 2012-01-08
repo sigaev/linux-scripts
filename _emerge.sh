@@ -67,7 +67,7 @@ git merge $arch || exit 1
 
 env-update
 
-. .git/scripts/_gentoo_programs.sh
-. .git/scripts/_gentoo_configure.sh
-. .git/scripts/_gentoo_bugs.sh
-. .git/scripts/_gentoo_cleanup.sh
+. .git/scripts/_programs.sh
+. .git/scripts/_configure.sh
+. .git/scripts/_bugs.sh
+. .git/scripts/_cleanup.sh

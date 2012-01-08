@@ -46,9 +46,11 @@ git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 
+true >portage/profile/package.provided
 emerge -f nvidia-cuda-toolkit
+git checkout portage/profile/package.provided
 mkdir ../opt/cuda
-sh /var/portage/distfiles/cudatoolkit*.run --nox11 -- --prefix=/opt/cuda
+sh /var/portage/distfiles/cudatoolkit*.run --nox11 -- --prefix=/opt/cuda || exit 1
 DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
 
 git diff _ root | git apply

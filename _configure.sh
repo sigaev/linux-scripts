@@ -3,7 +3,6 @@ ln -sfn /proc/self/mounts mtab
 ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules
 ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
-mkdir ../mnt/crypt
 echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:1000:100:$name:/home/$user:/bin/bash" >>passwd
 echo -e "ubuntu:!:10770:0:::::\n$user::10770:0:::::" >>shadow
 cat <<EOF >>sudoers

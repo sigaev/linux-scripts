@@ -3,7 +3,7 @@ rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
 for i in . .git/scripts; do
 (
 	cd $i
-	git gc --aggressive
+	git gc --aggressive --prune=2020
 	git update-server-info
 	git status
 )

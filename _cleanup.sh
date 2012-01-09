@@ -17,6 +17,6 @@ Things that MUST be done:
 	* same with /etc/{passwd,group}
 	* once it's clear the release is solid, update ${git%.git} with /etc/.git
 EOF
-[[ `git log -n1 --pretty=format:%H patch` != `git log -n1 --pretty=format:%H origin/patch` ]] && cat 1>&2 <<EOF
+[[ `git log -n1 --pretty=format:%H master^` != `git log -n1 --pretty=format:%H origin/master` ]] && cat 1>&2 <<EOF
 	* WARNING /etc/.git changed!
 EOF

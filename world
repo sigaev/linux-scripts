@@ -8,7 +8,10 @@ app-portage/gentoolkit
 app-text/evince
 dev-lang/R
 dev-python/pycuda
+media-fonts/corefonts
 media-gfx/dcraw
+media-gfx/eog
+media-gfx/imagemagick
 media-sound/alsa-utils
 media-video/mplayer2
 net-im/skype
@@ -37,6 +40,7 @@ x11-apps/xrandr
 x11-base/xorg-server
 x11-terms/gnome-terminal
 x11-terms/terminal
+x11-themes/tango-icon-theme
 xfce-base/xfce4-meta
 xfce-extra/xfce4-cpufreq-plugin
 xfce-extra/xfce4-cpugraph-plugin

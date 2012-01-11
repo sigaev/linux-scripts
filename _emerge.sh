@@ -46,8 +46,7 @@ git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 . .git/scripts/_programs.sh
-emerge -1 media-video/ffmpeg || exit 1
-DONT_MOUNT_BOOT=1 emerge -n $(<.git/scripts/world) || exit 1
+DONT_MOUNT_BOOT=1 arch= emerge -n $(<.git/scripts/world) || exit 1
 
 git diff _ root | git apply
 configs

@@ -34,6 +34,7 @@ sys-power/powertop
 virtual/jdk
 www-client/firefox-bin
 www-client/google-chrome:stable
+www-plugins/adobe-flash
 x11-apps/mesa-progs
 x11-apps/xhost
 x11-apps/xrandr

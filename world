@@ -6,6 +6,7 @@ app-editors/vim
 app-emulation/virtualbox-bin
 app-portage/gentoolkit
 app-text/evince
+app-text/texlive
 dev-lang/R
 dev-lang/python:2.6
 dev-python/pycuda
@@ -19,6 +20,7 @@ net-im/skype
 net-misc/dhcpcd
 net-misc/ntp
 net-wireless/wpa_supplicant
+sci-visualization/gnuplot
 sys-apps/hdparm
 sys-apps/less
 sys-apps/pmount

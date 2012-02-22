@@ -15,7 +15,7 @@ Things that MUST be done:
 	* pay attention to the above diff (if any), consider updating $git/scripts/world
 	* examine the diff of /var/log/install.{out,err}.xz and previous versions
 	* same with /etc/{passwd,group}
-	* run http://sigaev.com/programs/linux/test/pycuda
+	* run http://sigaev.com/programs/linux/test/{pycuda,tex}
 	* on deployments that load both virtually and physically:
 		- add ssd to /etc/fstab
 		- rename eth1 to eth0 in /etc/udev/rules.d/70-persistent-net.rules

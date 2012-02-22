@@ -11,6 +11,7 @@ mkdir $mount/root
 	wget -qO- $portage | tar xJpC var
 	ln -sfn `readlink etc/make.profile | sed s/usr/var/` etc/make.profile
 	cp {/,}etc/resolv.conf
+	cp usr/share/zoneinfo/America/New_York etc/localtime
 
 	mount -t proc{,,}
 	mount -R {/,}dev

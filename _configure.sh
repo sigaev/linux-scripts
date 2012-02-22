@@ -1,4 +1,3 @@
-cp ../usr/share/zoneinfo/America/New_York localtime
 ln -sfn /proc/self/mounts mtab
 ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules

@@ -46,22 +46,6 @@ git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 . .git/scripts/_programs.sh
-patch -d/var/portage/net-im/skype -p1 <<'EOF'
-diff --git a/skype-2.2.0.35-r1.ebuild b/skype-2.2.0.35-r1.ebuild
-index 1beb77e..a940b3c 100644
---- a/skype-2.2.0.35-r1.ebuild
-+++ b/skype-2.2.0.35-r1.ebuild
-@@ -11,7 +11,7 @@ DFILENAME=${P}.tar.bz2
- DESCRIPTION="A P2P-VoiceIP client."
- HOMEPAGE="http://www.skype.com/"
- SRC_URI="!qt-static? ( http://download.skype.com/linux/${DFILENAME} )
--	qt-static? ( http://download.skype.com/linux/${SFILENAME} )"
-+	qt-static? ( http://download.skype.com/linux/${DFILENAME} http://download.skype.com/linux/${SFILENAME} )"
- 
- LICENSE="skype-eula"
- SLOT="0"
-EOF
-FEATURES=-strict \
 DONT_MOUNT_BOOT=1 arch= emerge -n $(<.git/scripts/world) || exit 1
 
 git diff _ root | git apply

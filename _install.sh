@@ -15,7 +15,8 @@ mkdir $mount/root
 
 	mount -t proc{,,}
 	mount -R {/,}dev
-	[[ x86_64 == `uname -m` ]] && mount -t tmpfs{,} var/tmp
+	[[ 6000000 -lt `sed -n '/MemTotal/{s,[^0-9],,g;p}' /proc/meminfo` ]] \
+		&& mount -t tmpfs{,} var/tmp
 	chroot . /bin/bash etc/.git/scripts/_emerge.sh
 	mountpoint -q var/tmp && umount var/tmp
 	umount dev{/pts,/shm,} proc

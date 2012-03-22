@@ -17,7 +17,6 @@ Things that MUST be done:
 	* same with /etc/{passwd,group}
 	* run http://sigaev.com/programs/linux/test/{pycuda,tex}
 	* on deployments that load both virtually and physically:
-		- add ssd to /etc/fstab
 		- rename eth1 to eth0 in /etc/udev/rules.d/70-persistent-net.rules
 	* once it's clear the release is solid, update ${git%.git} with /etc/.git
 EOF

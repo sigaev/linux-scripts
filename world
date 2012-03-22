@@ -33,6 +33,7 @@ sys-fs/reiserfsprogs
 sys-fs/squashfs-tools
 sys-power/acpi
 sys-power/acpid
+sys-power/pm-utils
 sys-power/powertop
 virtual/jdk
 www-client/firefox-bin

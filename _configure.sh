@@ -34,7 +34,7 @@ start() {
 EOF
 chmod +x init.d/last
 mount -r /opt/VirtualBox/additions/VBoxGuestAdditions.iso /mnt
-bits=`file /bin/bash | grep -v 64`
+bits=`file /bin/bash | grep -v x86-64`
 ${bits:+i386} /mnt/VBoxLinuxAdditions.run
 umount /mnt
 mv X11/xorg.conf{,~}

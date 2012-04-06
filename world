@@ -14,6 +14,7 @@ media-fonts/corefonts
 media-gfx/dcraw
 media-gfx/eog
 media-gfx/imagemagick
+media-plugins/alsa-plugins
 media-sound/alsa-utils
 media-video/mplayer2
 net-im/skype
@@ -24,6 +25,7 @@ sci-visualization/gnuplot
 sys-apps/hdparm
 sys-apps/less
 sys-apps/pmount
+sys-auth/consolekit
 sys-boot/grub:2
 sys-devel/distcc
 sys-fs/btrfs-progs

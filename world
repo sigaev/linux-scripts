@@ -16,6 +16,7 @@ media-gfx/eog
 media-gfx/imagemagick
 media-plugins/alsa-plugins
 media-sound/alsa-utils
+media-sound/pavucontrol
 media-video/mplayer2
 net-im/skype
 net-misc/dhcpcd

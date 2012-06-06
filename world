@@ -10,6 +10,7 @@ app-text/texlive
 dev-lang/R
 dev-lang/python:2.6
 dev-python/pycuda
+dev-vcs/git
 media-fonts/corefonts
 media-gfx/dcraw
 media-gfx/eog

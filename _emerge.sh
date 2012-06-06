@@ -35,6 +35,7 @@ git branch -f _ $arch
 git rebase --onto root origin/root _ || exit 1
 
 echo 'dev-lang/python:2.6 -tk' >>portage/package.use
+emerge -n git
 emerge -e world || exit 1
 git checkout portage/package.use
 emerge -c || exit 1

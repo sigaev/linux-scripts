@@ -9,6 +9,7 @@ app-text/evince
 app-text/texlive
 dev-lang/R
 dev-lang/python:2.6
+dev-libs/libisoburn
 dev-python/pycuda
 dev-vcs/git
 media-fonts/corefonts
@@ -25,7 +26,6 @@ net-misc/ntp
 net-wireless/wpa_supplicant
 sci-visualization/gnuplot
 sys-apps/hdparm
-sys-apps/less
 sys-apps/pmount
 sys-auth/consolekit
 sys-boot/grub:2

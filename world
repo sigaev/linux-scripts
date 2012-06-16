@@ -26,6 +26,7 @@ net-misc/ntp
 net-wireless/wpa_supplicant
 sci-visualization/gnuplot
 sys-apps/hdparm
+sys-apps/netplug
 sys-apps/pmount
 sys-auth/consolekit
 sys-boot/grub:2

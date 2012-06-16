@@ -20,8 +20,15 @@ depend() {
 }
 
 start() {
-	if [[ ! -e /home/$user ]] && mkdir -m755 /home/$user; then
+	if [[ ! -e /home/$user ]]; then
 		ebegin "Downloading settings from the web"
+		for i in {1..40}; do
+			if service_started net.eth0 || service_started net.wlan0; then
+				break
+			fi
+			sleep 1
+		done
+		mkdir -m755 /home/$user
 		chown $user:users /home/$user
 		su -c '
 			wget -T9 -t3 -qO- $cfg/Makefile | grep list= | cut -d= -f2 | tr \\  \\\n \
@@ -40,7 +47,7 @@ umount /mnt
 mv X11/xorg.conf{,~}
 for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done
 (cd init.d; ln -sfn net.lo net.eth0; ln -sfn net.lo net.wlan0)
-for i in dbus metalog acpid cryptmount cryptnmount last net.eth0 net.wlan0 allnet sshd; do
+for i in dbus metalog acpid cryptmount cryptnmount last net.eth0 net.wlan0 vboxservice ntpd sshd; do
 	rc-update add $i default
 done
 for i in dmcrypt consolefont alsasound; do

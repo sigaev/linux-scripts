@@ -53,5 +53,6 @@ x11-terms/gnome-terminal
 x11-terms/terminal
 x11-themes/tango-icon-theme
 xfce-base/xfce4-meta
+xfce-extra/xfce4-battery-plugin
 xfce-extra/xfce4-cpufreq-plugin
 xfce-extra/xfce4-cpugraph-plugin

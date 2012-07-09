@@ -2,8 +2,10 @@ umask 022
 export COLUMNS=96
 cd etc
 
+ln -s ../var/portage ../usr/
+USE='-curl -perl -python -webdav' emerge -n git || exit 1
 diff -u <(git grep -h ^CHOST= origin/$arch make.conf) <(grep ^CHOST= make.conf) || exit 1
-rm -f make.conf
+rm -f make.conf ../usr/portage
 
 branches() {
 	git branch -r | cut -d/ -f2 | grep -vxf<(tr , \\n <<<$1)
@@ -35,7 +37,6 @@ git branch -f _ $arch
 git rebase --onto root origin/root _ || exit 1
 
 echo 'dev-lang/python:2.6 -tk' >>portage/package.use
-emerge -n git
 emerge -e world || exit 1
 git checkout portage/package.use
 emerge -c || exit 1

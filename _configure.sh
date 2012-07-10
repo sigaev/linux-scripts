@@ -44,7 +44,6 @@ mount -r /opt/VirtualBox/additions/VBoxGuestAdditions.iso /mnt
 bits=`file /bin/bash | grep -v x86-64`
 ${bits:+i386} /mnt/VBoxLinuxAdditions.run
 umount /mnt
-mv X11/xorg.conf{,~}
 for i in wheel audio video cdrom plugdev vboxusers; do gpasswd -a $user $i; done
 (cd init.d; ln -sfn net.lo net.eth0; ln -sfn net.lo net.wlan0)
 for i in dbus metalog acpid cryptmount cryptnmount last net.eth0 net.wlan0 vboxservice ntpd sshd; do

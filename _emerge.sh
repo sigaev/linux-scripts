@@ -43,3 +43,5 @@ env-update
 . .git/scripts/_configure.sh
 . .git/scripts/_bugs.sh
 . .git/scripts/_cleanup.sh
+
+exit 0

@@ -1,9 +1,9 @@
-git=http://sigaev.com/programs/linux/root/.git
+git=sigaev.com/programs/linux/root
 
-wget -qO/dev/shm/config $git/scripts/config
+wget -qO/dev/shm/config $git/.git/scripts/config
 . /dev/shm/config
 which git || sudo yum -y install git
-wget -qO/dev/shm/_install.sh $git/scripts/_install.sh
+wget -qO/dev/shm/_install.sh $git/.git/scripts/_install.sh
 sudo arch=$arch mount=$mount stage3=$stage3 portage=$portage \
 	user=$user name="$name" cfg=$cfg prg="$prg" git=$git \
 	setsid nohup bash /dev/shm/_install.sh </dev/null >/dev/null 2>&1 &

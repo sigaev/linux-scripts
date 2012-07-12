@@ -2,14 +2,14 @@ umask 022
 mkdir $mount/root
 (
 	cd $mount/root
-	git clone -n $git etc
+	git clone -n git://$git etc
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $portage | tar xJpC var
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
 	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
-	git clone $git/scripts/.git .git/scripts
+	git clone git://$git/.git/scripts .git/scripts
 	echo \* >>.git/info/exclude
 	echo /config >>.git/scripts/.git/info/exclude
 	cp /dev/shm/config .git/scripts

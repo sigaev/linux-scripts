@@ -1,4 +1,5 @@
-git=sigaev.com/programs/linux/root
+host=`wget -qO- sigaev.com/cgi-bin/aws-hostname.cgi`
+git=$host/programs/linux/root
 
 wget -qO/dev/shm/config $git/.git/scripts/config
 . /dev/shm/config

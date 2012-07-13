@@ -10,12 +10,12 @@ configs() {
 	done
 }
 
-echo 'dev-lang/python:2.6 -tk' >>portage/package.use
+echo dev-lang/python:2.6 -tk >>portage/package.use
 emerge -e git world || exit 1
 git checkout portage/package.use
+emerge -c || exit 1
 
 git checkout stage3 || exit 1
-
 configs
 git commit -amAuto-update
 git rebase stage3 root || exit 1

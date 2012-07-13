@@ -4,7 +4,7 @@ mkdir $mount/root
 	cd $mount/root
 	git clone -n git://$git etc
 	wget -qO- $stage3 | tar xjp
-	wget -qO- $portage | tar xJpC var
+	wget -qO- $portage | tar xzC var
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime

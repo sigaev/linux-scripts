@@ -5,6 +5,9 @@ mkdir $mount/root
 	git clone -n git://$git etc
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $portage | tar xzC var
+	mv var/{funtoo*,portage}
+	chmod -R go-w var/portage
+	chown -R 250:250 var/portage
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime

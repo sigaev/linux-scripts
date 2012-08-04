@@ -6,14 +6,15 @@ mkdir $mount/root
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $tgz_portage | tar xzC var
 	mv var/{funtoo*,portage}
-	chmod -R go-w var/portage
-	chown -R 250:250 var/portage
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
 	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
 	cp -a /dev/shm/*-linux-scripts-* .git/scripts
 	cp -a /dev/shm/*-linux-config-* .git/scripts/config
+	chmod -R go-w var/portage .git/scripts
+	chown -R 250:250 var/portage
+	chown -R root:root .git/scripts
 	echo \* >>.git/info/exclude
 	. .git/scripts/_emerge_setup.sh
 

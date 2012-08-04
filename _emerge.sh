@@ -36,6 +36,9 @@ done
 
 git checkout master || exit 1
 git branch -D origin/root root _
+branches | while read i; do
+	git tag -f base/$i $i
+done
 git merge $arch || exit 1
 
 env-update

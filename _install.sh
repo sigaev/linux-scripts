@@ -2,9 +2,9 @@ umask 022
 mkdir $mount/root
 (
 	cd $mount/root
-	git clone -n git://$git etc
+	git clone -n $git_root etc
 	wget -qO- $stage3 | tar xjp
-	wget -qO- $portage | tar xzC var
+	wget -qO- $tgz_portage | tar xzC var
 	mv var/{funtoo*,portage}
 	chmod -R go-w var/portage
 	chown -R 250:250 var/portage
@@ -12,10 +12,9 @@ mkdir $mount/root
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
 	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
-	git clone git://$git/.git/scripts .git/scripts
+	cp -a /dev/shm/*-linux-scripts-* .git/scripts
+	cp -a /dev/shm/*-linux-config-* .git/scripts/config
 	echo \* >>.git/info/exclude
-	echo /config >>.git/scripts/.git/info/exclude
-	cp /dev/shm/config .git/scripts
 	. .git/scripts/_emerge_setup.sh
 
 	cd ..

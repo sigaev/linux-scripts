@@ -1,7 +1,7 @@
 [[ $1 ]] || exit 1
 
 arch=$1
-tgz_config=github.com/sigaev/linux-config/tarball/HEAD
+tgz_config=https://github.com/sigaev/linux-config/tarball/HEAD
 
 wget -qO- $tgz_config | tar xzC /dev/shm
 cd /dev/shm/*-linux-config-*

@@ -1,6 +1,6 @@
-for i in $git_prg; do
+for i in $tgz_prg; do
 	d=/dev/shm/_gentoo
-	git clone $i $d
-	(cd $d && make)
+	wget -qO- $i | tar xzC $d
+	(cd $d/* && exec make) || exit 1
 	rm -fr $d
 done

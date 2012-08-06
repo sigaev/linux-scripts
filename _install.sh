@@ -1,11 +1,21 @@
+mail() {
+	{
+		echo -e "To: $mail\nSubject: Gentoo build $1\n"
+		tail -500 err
+		echo ----------------------------------------------------------
+		tail -500 out
+	} | sendmail -t
+}
+
 umask 022
-mkdir $mount/root
+cd $mount
+mkdir root
 (
-	cd $mount/root
+	cd root
 	git clone -n $git_root etc
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $tgz_portage | tar xzC var
-	mv var/{funtoo*,portage}
+	mv var/{*-portage-*,portage}
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
@@ -20,20 +30,23 @@ mkdir $mount/root
 
 	cd ..
 	mount -t proc{,,}
-	mount -R {/,}dev
+	mount -B {/,}dev
+	mount -B {/,}dev/shm
 	[[ 6000000 -lt `sed -n '/MemTotal/{s,[^0-9],,g;p}' /proc/meminfo` ]] \
 		&& mount -t tmpfs{,} var/tmp
 	chroot . bash etc/.git/scripts/_emerge.sh
 	e=$?
 	mountpoint -q var/tmp && umount var/tmp
-	umount dev{/pts,/shm,} proc
-	((! e))
-) >$mount/out 2>$mount/err && (
-	cd $mount
-	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz && rm -f $i; done
+	umount dev{/shm,} proc
+	exit $e
+) >out 2>err && (
+	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz; done
 	file=`date +%Y-%m-%d`-$arch.sfs
-	LD_LIBRARY_PATH=root/lib:root/usr/lib \
-		root/usr/bin/mksquashfs root $file -comp xz >>out 2>>err
-	su ec2-user -c "root/usr/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file"
-)
+	LD_LIBRARY_PATH=root/lib:root/usr/lib root/usr/bin/mksquashfs \
+		root $file -no-progress -comp xz >out 2>>err || exit 1
+	su -c "root/usr/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file" \
+		ec2-user >>out 2>>err || exit 1
+	mail SUCCEDED
+	exit 0
+) || mail FAILED
 shutdown -h now

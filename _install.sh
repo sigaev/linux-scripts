@@ -34,6 +34,6 @@ mkdir $mount/root
 	file=`date +%Y-%m-%d`-$arch.sfs
 	LD_LIBRARY_PATH=root/lib:root/usr/lib \
 		root/usr/bin/mksquashfs root $file -comp xz >>out 2>>err
-	md5sum $file >$file.md5
+	su ec2-user -c "root/usr/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file"
 )
 shutdown -h now

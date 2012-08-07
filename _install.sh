@@ -1,8 +1,10 @@
 mail() {
+	local div=------------------------------------------------------------
 	{
-		echo -e "To: $mail\nSubject: Gentoo build $1\n"
+		echo -e "To: $mail\nSubject: Gentoo $arch build $1\n"
+		[[ $2 ]] && echo -e "Download: $2\n$div"
 		tail -500 err
-		echo ----------------------------------------------------------
+		echo $div
 		tail -500 out
 	} | sendmail -t
 }
@@ -16,6 +18,8 @@ mkdir root
 	wget -qO- $stage3 | tar xjp
 	wget -qO- $tgz_portage | tar xzC var
 	mv var/{*-portage-*,portage}
+	p=var/portage/profiles/package.mask
+	[[ $p/gentoo == `echo $p/*` ]] && mv $p{/gentoo,-} && rmdir $p && mv $p{-,}
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
@@ -47,7 +51,7 @@ mkdir root
 		root $file -no-progress -comp xz >out 2>>err || exit 1
 	su -c "root/usr/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file" \
 		ec2-user >>out 2>>err || exit 1
-	mail SUCCEDED
+	mail SUCCEDED s3.amazonaws.com/$user/linux/$file
 	exit 0
 ) || mail FAILED
 shutdown -h now

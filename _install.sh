@@ -22,8 +22,8 @@ mkdir root
 	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
 	cp -a /dev/shm/*-linux-scripts-* .git/scripts
 	cp -a /dev/shm/*-linux-config-* .git/scripts/config
-	chmod -R go-w var/portage .git/scripts
-	chown -R 250:250 var/portage
+	chmod -R go-w ../var/portage .git/scripts
+	chown -R 250:250 ../var/portage
 	chown -R root:root .git/scripts
 	echo \* >>.git/info/exclude
 	. .git/scripts/_emerge_setup.sh
@@ -32,12 +32,13 @@ mkdir root
 	mount -t proc{,,}
 	mount -B {/,}dev
 	mount -B {/,}dev/shm
+	mount -B {/,}dev/pts
 	[[ 6000000 -lt `sed -n '/MemTotal/{s,[^0-9],,g;p}' /proc/meminfo` ]] \
 		&& mount -t tmpfs{,} var/tmp
 	chroot . bash etc/.git/scripts/_emerge.sh
 	e=$?
 	mountpoint -q var/tmp && umount var/tmp
-	umount dev{/shm,} proc
+	umount dev{/pts,/shm,} proc
 	exit $e
 ) >out 2>err && (
 	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz; done

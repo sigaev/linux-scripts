@@ -2,7 +2,7 @@ mail() {
 	local div=------------------------------------------------------------
 	{
 		echo -e "To: $mail\nSubject: Gentoo $arch build $1\n"
-		[[ $2 ]] && echo -e "Download: $2\n$div"
+		[[ $2 ]] && echo -e "Try in a terminal: gentoo `basename $2`\nDownload: $2\n$div"
 		tail -500 err
 		echo $div
 		tail -500 out

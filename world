@@ -24,6 +24,7 @@ media-video/mplayer2
 net-im/skype
 net-misc/dhcpcd
 net-misc/ntp
+net-wireless/iw
 net-wireless/wpa_supplicant
 sci-visualization/gnuplot
 sys-apps/hdparm

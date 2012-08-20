@@ -47,7 +47,7 @@ mkdir root
 ) >out 2>err && (
 	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz; done
 	file=`date +%Y-%m-%d`-$arch.sfs
-	LD_LIBRARY_PATH=root/lib:root/usr/lib root/usr/bin/mksquashfs \
+	root/lib/ld-2* --library-path root/lib:root/usr/lib root/usr/bin/mksquashfs \
 		root $file -no-progress -comp xz >out 2>>err || exit 1
 	su -c "root/usr/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file" \
 		ec2-user >>out 2>>err || exit 1

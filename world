@@ -11,6 +11,8 @@ dev-lang/R
 dev-lang/python:2.6
 dev-libs/libisoburn
 dev-python/pycuda
+dev-util/perf
+dev-util/strace
 dev-vcs/git
 media-fonts/corefonts
 media-gfx/dcraw
@@ -33,6 +35,7 @@ sys-apps/pmount
 sys-auth/consolekit
 sys-boot/grub:2
 sys-devel/distcc
+sys-devel/gdb
 sys-fs/btrfs-progs
 sys-fs/cryptsetup
 sys-fs/dosfstools

@@ -5,8 +5,11 @@ ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
 echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:1000:100:$name:/home/$user:/bin/bash" >>passwd
 echo -e "ubuntu:!:10770:0:::::\n$user::10770:0:::::" >>shadow
 cat <<EOF >>sudoers
+Cmnd_Alias	NOTTY=/etc/local.d/pm-suspend,/etc/init.d/cryptnmount
+Defaults	requiretty
+Defaults!NOTTY	!requiretty
 Defaults:$user	env_keep=MC_FORMAT
-$user	ALL=NOPASSWD:/usr/local/sbin/mount-crypt.sh,/usr/local/sbin/umount-crypt.sh,/sbin/reboot,/sbin/shutdown,/bin/passwd,/etc/local.d/pm-suspend,/etc/init.d/cryptnmount,/sbin/btrfs,/usr/lib/xfce4/session/xfsm-shutdown-helper
+$user	ALL=NOPASSWD:ALL
 EOF
 cat <<EOF >conf.d/hostname
 hostname="$arch"

@@ -18,18 +18,14 @@ mkdir root
 	cd root
 	git clone -n $git_root etc
 	wget -qO- $stage3 | tar xjp
-	wget -qO- $tgz_portage | tar xzC var
-	mv var/{*-portage-*,portage}
-	p=var/portage/profiles/package.mask
-	[[ $p/gentoo == `echo $p/*` ]] && mv $p{/gentoo,-} && rmdir $p && mv $p{-,}
+	wget -qO- $txz_portage | tar xJpC var
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
 	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
 	cp -a /dev/shm/*-linux-scripts-* .git/scripts
 	cp -a /dev/shm/*-linux-config-* .git/scripts/config
-	chmod -R go-w ../var/portage .git/scripts
-	chown -R 250:250 ../var/portage
+	chmod -R go-w .git/scripts
 	chown -R root:root .git/scripts
 	echo \* >>.git/info/exclude
 	. .git/scripts/_emerge_setup.sh

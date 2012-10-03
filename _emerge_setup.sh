@@ -1,7 +1,7 @@
 . .git/scripts/_emerge_env.sh
 
-diff -u <(git grep -h ^CHOST= origin/$arch make.conf) <(grep ^CHOST= make.conf) || exit 1
-rm -f make.conf
+diff -u <(git grep -h ^CHOST= origin/$arch portage/make.conf) <(grep ^CHOST= portage/make.conf) || exit 1
+rm -f portage/make.conf
 
 git remote set-head origin -d
 git branch -m master _

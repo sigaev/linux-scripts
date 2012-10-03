@@ -22,7 +22,7 @@ mkdir root
 	cd etc
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
-	ln -sfn `readlink make.profile | sed s,usr,var,` make.profile
+	ln -sfn `readlink portage/make.profile | sed s,usr,var,` portage/make.profile
 	cp -a /dev/shm/*-linux-scripts-* .git/scripts
 	cp -a /dev/shm/*-linux-config-* .git/scripts/config
 	chmod -R go-w .git/scripts

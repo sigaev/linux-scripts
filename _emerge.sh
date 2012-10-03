@@ -10,9 +10,7 @@ configs() {
 	done
 }
 
-echo dev-lang/python:2.6 -tk >>portage/package.use
 emerge -e git world || exit 1
-git checkout portage/package.use
 emerge -c || exit 1
 
 git checkout stage3 || exit 1

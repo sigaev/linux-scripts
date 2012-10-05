@@ -47,7 +47,6 @@ sys-power/powertop
 virtual/jdk
 www-client/firefox-bin
 www-client/google-chrome:stable
-www-plugins/adobe-flash
 www-plugins/google-talkplugin
 x11-apps/mesa-progs
 x11-apps/xhost

@@ -55,6 +55,7 @@ x11-base/xorg-server
 x11-terms/gnome-terminal
 x11-terms/terminal
 x11-themes/tango-icon-theme
+x11-wm/compiz-fusion
 xfce-base/xfce4-meta
 xfce-extra/xfce4-battery-plugin
 xfce-extra/xfce4-cpufreq-plugin

@@ -55,5 +55,7 @@ done
 for i in dmcrypt consolefont alsasound; do
 	rc-update add $i boot
 done
-rc-update add first sysinit
+for i in first udev-mount; do
+	rc-update add $i sysinit
+done
 rc-update delete mtab boot

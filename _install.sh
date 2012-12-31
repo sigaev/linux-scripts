@@ -64,4 +64,4 @@ mkdir root
 	mail SUCCEDED s3.amazonaws.com/$user/linux/$file
 	exit 0
 ) || mail FAILED
-shutdown -h now
+[[ ${arch/-j} == $arch ]] || shutdown -h now

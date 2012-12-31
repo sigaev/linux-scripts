@@ -33,14 +33,23 @@ mkdir root
 	cd ..
 	mount -t proc{,,}
 	mount -B {/,}dev
-	mount -B {/,}dev/shm
+	if mountpoint -q /dev/shm; then
+		mount -B {/,}dev/shm
+	else
+		mount -B {/,}run
+		mount -B {/,}run/shm
+	fi
 	mount -B {/,}dev/pts
 	[[ 6000000 -lt `sed -n '/MemTotal/{s,[^0-9],,g;p}' /proc/meminfo` ]] \
 		&& mount -t tmpfs{,} var/tmp
 	chroot . bash etc/.git/scripts/_emerge.sh
 	e=$?
 	mountpoint -q var/tmp && umount var/tmp
-	umount dev{/pts,/shm,} proc
+	if mountpoint -q /dev/shm; then
+		umount dev{/pts,/shm,} proc
+	else
+		umount dev{/pts,} run{/shm,} proc
+	fi
 	exit $e
 ) >out 2>err && (
 	for i in out err; do xz -c9 $i >root/var/log/install.$i.xz; done

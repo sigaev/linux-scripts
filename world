@@ -53,7 +53,7 @@ x11-apps/xhost
 x11-apps/xrandr
 x11-base/xorg-server
 x11-terms/gnome-terminal
-x11-terms/terminal
+x11-terms/xfce4-terminal
 x11-themes/tango-icon-theme
 x11-wm/compiz-fusion
 xfce-base/xfce4-meta

@@ -12,6 +12,7 @@ configs() {
 
 emerge -e git world || exit 1
 emerge -c || exit 1
+rm -fr ../var/portage/distfiles/*
 
 git checkout stage3 || exit 1
 configs

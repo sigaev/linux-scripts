@@ -10,6 +10,8 @@ configs() {
 	done
 }
 
+ln -f `readlink -f /usr/bin/ld`{.gold,} || exit 1
+
 if emerge -pv gcc | grep -q NS; then
 	old_gcc=$(gcc-config -S $(gcc-config -c) | cut -d\  -f2)
 	emerge -1u gcc && gcc-config 2 || exit 1
@@ -17,7 +19,7 @@ if emerge -pv gcc | grep -q NS; then
 	emerge -C =sys-devel/gcc-$old_gcc && emerge -1 libtool || exit 1
 fi
 
-emerge -e git world || exit 1
+emerge -e --keep-going git world || exit 1
 emerge -c || exit 1
 rm -fr ../var/portage/distfiles/*
 
@@ -29,7 +31,7 @@ git rebase root _ || exit 1
 
 groupadd -g 999 vboxusers
 . .git/scripts/_programs.sh
-DONT_MOUNT_BOOT=1 arch= emerge -N $(<.git/scripts/world) || exit 1
+DONT_MOUNT_BOOT=1 arch= emerge -N --keep-going $(<.git/scripts/world) || exit 1
 emerge -c || exit 1
 
 git diff _ root | git apply

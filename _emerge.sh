@@ -1,5 +1,5 @@
 umask 022
-export COLUMNS=96
+export COLUMNS=80
 cd etc
 
 . .git/scripts/_emerge_env.sh
@@ -10,8 +10,6 @@ configs() {
 	done
 }
 
-ln -f `readlink -f /usr/bin/ld`{.gold,} || exit 1
-
 if emerge -pv gcc | grep -q NS; then
 	old_gcc=$(gcc-config -S $(gcc-config -c) | cut -d\  -f2)
 	emerge -1u gcc && gcc-config 2 || exit 1
@@ -19,6 +17,7 @@ if emerge -pv gcc | grep -q NS; then
 	emerge -C =sys-devel/gcc-$old_gcc && emerge -1 libtool || exit 1
 fi
 
+emerge -1 binutils || exit 1
 emerge -e --keep-going git world || exit 1
 emerge -c || exit 1
 rm -fr ../var/portage/distfiles/*

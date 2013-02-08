@@ -1,4 +1,4 @@
-rm -fr ../var/portage/distfiles/* ../var/tmp/* ../tmp/*
+rm -fr ../var/tmp/* ../tmp/*
 
 git remote set-url origin $git_root_ssh
 git gc --aggressive --prune=2020

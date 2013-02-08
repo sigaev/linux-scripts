@@ -65,4 +65,5 @@ mkdir root
 	mail SUCCEDED s3.amazonaws.com/$user/linux/$file
 	exit 0
 ) || mail FAILED
+rm -fr /dev/shm/*-linux-{config,scripts}-*
 [[ ${arch/-j} != $arch ]] || shutdown -h now

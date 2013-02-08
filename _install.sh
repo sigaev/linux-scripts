@@ -13,6 +13,7 @@ mail() {
 
 umask 022
 cd $mount
+rm -fr root
 mkdir root
 (
 	cd root

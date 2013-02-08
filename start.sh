@@ -4,6 +4,7 @@ arch=$1
 tgz_config=https://github.com/sigaev/linux-config/tarball/HEAD
 
 umask 022
+rm -fr /dev/shm/*-linux-{config,scripts}-*
 wget -qO- $tgz_config | tar xzC /dev/shm
 cd /dev/shm/*-linux-config-*
 . config

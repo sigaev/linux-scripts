@@ -1,8 +1,9 @@
+not_aws() { [[ ${arch/-j} != $arch ]]; }
 mail() {
 	local div=------------------------------------------------------------------------------
 	{
 		echo -e "To: $mail\nSubject: Gentoo $arch build $1\n"
-		[[ $2 ]] && echo -e "Try in a terminal: gentoo `basename $2`\nDownload: $2\n$div"
+		! not_aws && [[ $2 ]] && echo -e "Try in a terminal: gentoo `basename $2`\nDownload: $2\n$div"
 		tail -500 err
 		echo $div
 		tail -500 out
@@ -24,10 +25,8 @@ mkdir root
 	cp /etc/resolv.conf .
 	cp ../usr/share/zoneinfo/America/New_York localtime
 	ln -sfn `readlink portage/make.profile | sed s,usr,var,` portage/make.profile
-	cp -a /dev/shm/*-linux-scripts-* .git/scripts
-	cp -a /dev/shm/*-linux-config-* .git/scripts/config
-	chmod -R go-w .git/scripts
-	chown -R root:root .git/scripts
+	cp -r /dev/shm/*-linux-scripts-* .git/scripts
+	cp -r /dev/shm/*-linux-config-* .git/scripts/config
 	echo \* >>.git/info/exclude
 	. .git/scripts/_emerge_setup.sh
 
@@ -57,13 +56,15 @@ mkdir root
 	file=`date +%Y-%m-%d`-$arch.sfs
 	root/lib/ld-2* --library-path root/lib:root/usr/lib root/usr/bin/mksquashfs \
 		root $file -no-progress -comp xz >out 2>>err || exit 1
-	(su -c "root/usr/local/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file" \
-			ec2-user && \
-		wget -S --spider s3.amazonaws.com/$user/linux/$file 2>&1 | \
-			sed -n "/ETag/{s:[^\"]*\"::;s:\":  $file:;p}" | \
-			md5sum -c) >>out 2>>err || exit 1
+	not_aws \
+		|| (su -c "root/usr/local/bin/aws put 'x-amz-acl: public-read' 'x-amz-storage-class: REDUCED_REDUNDANCY' $user/linux/$file $file" \
+				ec2-user \
+			&& wget -S --spider s3.amazonaws.com/$user/linux/$file 2>&1 \
+				| sed -n "/ETag/{s:[^\"]*\"::;s:\":  $file:;p}" \
+				| md5sum -c) >>out 2>>err \
+		|| exit 1
 	mail SUCCEDED s3.amazonaws.com/$user/linux/$file
 	exit 0
 ) || mail FAILED
 rm -fr /dev/shm/*-linux-{config,scripts}-*
-[[ ${arch/-j} != $arch ]] || shutdown -h now
+not_aws || shutdown -h now

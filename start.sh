@@ -1,12 +1,12 @@
 [[ $1 ]] || exit 1
+ls -d /dev/shm/*-linux-config-* 2>/dev/null && exit 1
 
 arch=$1
 tgz_config=https://github.com/sigaev/linux-config/tarball/HEAD
 
 umask 022
-rm -fr /dev/shm/*-linux-{config,scripts}-*
 wget -qO- $tgz_config | tar xzC /dev/shm
-cd /dev/shm/*-linux-config-*
+cd /dev/shm/*-linux-config-* || exit 1
 . config
 which git || sudo yum -y install git
 wget -qO- $tgz_scripts | tar xzC ..

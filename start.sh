@@ -10,7 +10,7 @@ cd /dev/shm/*-linux-config-* || exit 1
 . config
 which git || sudo yum -y install git
 wget -qO- $tgz_scripts | tar xzC ..
-sudo arch=$arch mount=/media stage3=$stage3 txz_portage=$txz_portage \
+sudo arch=$arch stage3=$stage3 txz_portage=$txz_portage \
 	user=$user name="$name" cfg=$cfg mail=$mail \
 	tgz_prg="$tgz_prg" git_root=$git_root git_root_ssh=$git_root_ssh \
 	setsid nohup sh -c 'bash ../*-linux-scripts-*/_install.sh &' \

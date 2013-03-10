@@ -2,7 +2,8 @@ ln -sfn /proc/self/mounts mtab
 ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules
 ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
-echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:1000:100:$name:/home/$user:/bin/bash" >>passwd
+groupadd -g 5000 eng
+echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:172504:5000:$name:/home/$user:/bin/bash" >>passwd
 echo -e "ubuntu:!:10770:0:::::\n$user::10770:0:::::" >>shadow
 cat <<EOF >>sudoers
 Cmnd_Alias	NOTTY=/etc/local.d/pm-suspend,/etc/init.d/cryptnmount
@@ -32,7 +33,7 @@ start() {
 			sleep 1
 		done
 		mkdir -m755 /home/$user
-		chown $user:users /home/$user
+		chown $user:eng /home/$user
 		su -c '
 			wget -T9 -t3 -qO- $cfg/Makefile | grep list= | cut -d= -f2 | tr \\  \\\n \
 				| sed s,$,.txz, | wget -T9 -t3 -qO- -B$cfg/ -i- | tar xiJ

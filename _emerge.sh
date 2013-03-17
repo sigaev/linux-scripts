@@ -10,6 +10,7 @@ configs() {
 	done
 }
 
+eselect profile set 1
 touch /dev/shm/emerge.patch
 patch -p1 -i/dev/shm/emerge.patch || exit 1
 

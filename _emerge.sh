@@ -36,6 +36,7 @@ git rebase root _ || exit 1
 
 patch -p1 -i/dev/shm/emerge.patch || exit 1
 
+groupadd -g 998 games
 groupadd -g 999 vboxusers
 . .git/scripts/_programs.sh
 DONT_MOUNT_BOOT=1 arch= emerge -N --keep-going $(<.git/scripts/world) || exit 1

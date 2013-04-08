@@ -3,6 +3,7 @@ ln -sfn ../{boot,lib}/firmware
 ln -sfn ../boot ../lib/modules
 ln -s ../../boot/secret/etc/wpa_supplicant/wpa_supplicant.conf wpa_supplicant/
 ln -s /home/$user/sandbox/doom3/base/{game00,pak00{0..4}}.pk4 /opt/doom3/base/
+touch udev/rules.d/80-net-name-slot.rules
 groupadd -g 5000 eng
 echo -e "ubuntu:x:6666:10::/:/bin/bash\n$user:x:172504:5000:$name:/home/$user:/bin/bash" >>passwd
 echo -e "ubuntu:!:10770:0:::::\n$user::10770:0:::::" >>shadow

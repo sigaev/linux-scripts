@@ -22,9 +22,7 @@ if emerge -pv gcc | grep -q NS; then
 fi
 
 emerge -1 binutils || exit 1
-echo 'dev-lang/python:2.7 -tk' >>portage/package.use
 emerge -e --keep-going git world || exit 1
-git checkout portage/package.use
 emerge -c || exit 1
 rm -fr ../var/portage/distfiles/*
 

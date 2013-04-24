@@ -62,3 +62,4 @@ for i in first; do
 	rc-update add $i sysinit
 done
 rc-update delete mtab boot
+eselect opengl set nvidia

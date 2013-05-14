@@ -13,6 +13,7 @@ dev-python/pycuda
 dev-util/perf
 dev-util/strace
 dev-vcs/git
+dev-vcs/tig
 games-fps/doom3
 media-fonts/corefonts
 media-gfx/dcraw

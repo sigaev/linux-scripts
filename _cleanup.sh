@@ -1,4 +1,5 @@
 rm -fr ../var/tmp/* ../tmp/*
+true >resolv.conf
 
 git remote set-url origin $git_root_ssh
 git gc --aggressive --prune=2020

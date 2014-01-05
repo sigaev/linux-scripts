@@ -22,7 +22,7 @@ if emerge -pv gcc | grep -q NS; then
 fi
 
 emerge -1 binutils || exit 1
-emerge -e --keep-going git world || exit 1
+emerge -e --keep-going dev-vcs/git world || exit 1
 emerge -c || exit 1
 rm -fr ../var/portage/distfiles/*
 

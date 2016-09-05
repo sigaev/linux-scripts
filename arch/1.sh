@@ -87,7 +87,7 @@ Before=shutdown.target umount.target final.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/kexec -l /boot/\${SUBVOL_BOOT}/vmlinuz.efi --initrd=/boot/\${SUBVOL_BOOT}/initrd.lz --reuse-cmdline
+ExecStart=/usr/bin/bash /var/tmp/kexec-reload
 
 [Install]
 WantedBy=kexec.target
@@ -98,7 +98,7 @@ EOF
     pacman --noconfirm -Syu
     pacman --noconfirm -S iw wpa_supplicant ntp alsa-utils base-devel vim \
                           xfce4 xorg-server kexec-tools git cpio wget \
-                          xf86-input-libinput btrfs-progs
+                          xf86-input-libinput btrfs-progs graphviz
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev

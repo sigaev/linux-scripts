@@ -4,9 +4,14 @@
 # 1. Update "url" below.
 # 2. Run.
 # 3. Run "mount". There should be exactly one new mount (let's call it $MNT).
-# 4. Copy kernel files into $MNT/boot.
-# 5. From AUR, install google-chrome and compiz.
-# 6. Think about how to eliminate steps (4) and (5).
+# 4. From AUR, install google-chrome and compiz.
+# 5. Copy $MNT to a new Btrfs snapshot.
+# 6. Add the new boot option. Example kernel command line:
+#    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
+#    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
+#    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
+#    systemd.setenv=SYSTEMD_BOOT=64-16.04
+# 7. Think about how to eliminate step (4).
 
 (
   host=lug.mtu.edu
@@ -41,6 +46,23 @@ EOF
   umount $mounts && cd .. && rm -fr `pwd`
 
   cd /$dir
+  cat >etc/systemd/system/boot.mount <<EOF
+[Unit]
+Description=Boot Directory
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target kexec.target systemd-udev-trigger.service systemd-udevd.service
+After=swap.target
+
+[Mount]
+What=LABEL=root
+Where=/boot
+Type=auto
+Options=ro,noatime,ssd,discard,compress=zlib,subvol=\${SYSTEMD_BOOT}
+
+[Install]
+RequiredBy=systemd-udevd.service
+EOF
   cat >etc/systemd/system/kexec-reload.service <<EOF
 [Unit]
 Description=restart the current kernel
@@ -62,7 +84,7 @@ EOF
     pacman --noconfirm -S iw wpa_supplicant ntp alsa-utils base-devel vim \
                           xfce4 xorg-server kexec-tools git cpio wget \
                           xf86-input-libinput btrfs-progs
-    systemctl enable ntpd wpa_supplicant@$wifi systemd-networkd kexec-reload
+    systemctl enable ntpd wpa_supplicant@$wifi systemd-networkd boot.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     (

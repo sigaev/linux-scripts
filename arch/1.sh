@@ -50,6 +50,7 @@ EOF
 [Unit]
 Description=Boot Directory
 DefaultDependencies=no
+ConditionVirtualization=!container
 Conflicts=umount.target
 After=swap.target
 
@@ -66,6 +67,7 @@ EOF
 [Unit]
 Description=Modules Directory
 DefaultDependencies=no
+ConditionVirtualization=!container
 Conflicts=umount.target
 Before=local-fs.target umount.target kexec.target systemd-udev-trigger.service systemd-udevd.service
 After=boot.mount
@@ -129,7 +131,7 @@ EOF
                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
   ln -sfn ../usr/share/zoneinfo/America/New_York etc/localtime
   cat >>etc/fstab <<EOF
-LABEL=root /     auto  noatime,ssd,discard,compress=zlib              0 1
+none       /     auto  noatime,ssd,discard,compress=zlib              0 1
 LABEL=home /home auto  noatime,ssd,discard,compress=zlib,subvol=arch  0 2
 LABEL=home /mnt  auto  noatime,ssd,discard,compress=zlib              0 2
 EOF

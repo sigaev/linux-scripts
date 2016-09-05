@@ -10,7 +10,7 @@
 #    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
 #    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
 #    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
-#    systemd.setenv=SYSTEMD_BOOT=64-16.04
+#    systemd.setenv=SUBVOL_BOOT=64-16.04
 # 7. Think about how to eliminate step (4).
 
 (
@@ -51,14 +51,29 @@ EOF
 Description=Boot Directory
 DefaultDependencies=no
 Conflicts=umount.target
-Before=local-fs.target umount.target kexec.target systemd-udev-trigger.service systemd-udevd.service
 After=swap.target
 
 [Mount]
 What=LABEL=root
 Where=/boot
 Type=auto
-Options=ro,noatime,ssd,discard,compress=zlib,subvol=\${SYSTEMD_BOOT}
+Options=ro,noatime,ssd,discard,compress=zlib
+
+[Install]
+RequiredBy=usr-lib-modules.mount
+EOF
+  cat >etc/systemd/system/usr-lib-modules.mount <<EOF
+[Unit]
+Description=Modules Directory
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target kexec.target systemd-udev-trigger.service systemd-udevd.service
+After=boot.mount
+
+[Mount]
+What=/boot/\${SUBVOL_BOOT}
+Where=/usr/lib/modules
+Options=bind
 
 [Install]
 RequiredBy=systemd-udevd.service
@@ -72,7 +87,7 @@ Before=shutdown.target umount.target final.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/kexec -l /boot/vmlinuz.efi --initrd=/boot/initrd.lz --reuse-cmdline
+ExecStart=/usr/bin/kexec -l /boot/\${SUBVOL_BOOT}/vmlinuz.efi --initrd=/boot/\${SUBVOL_BOOT}/initrd.lz --reuse-cmdline
 
 [Install]
 WantedBy=kexec.target
@@ -84,7 +99,7 @@ EOF
     pacman --noconfirm -S iw wpa_supplicant ntp alsa-utils base-devel vim \
                           xfce4 xorg-server kexec-tools git cpio wget \
                           xf86-input-libinput btrfs-progs
-    systemctl enable ntpd wpa_supplicant@$wifi systemd-networkd boot.mount kexec-reload
+    systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     (
@@ -110,8 +125,6 @@ EOF
   )
   kill-chroot-processes
   umount $mounts
-  mv lib/modules{,~}
-  ln -sfn /boot lib/modules
   ln -sfn /mnt/secret/etc/wpa_supplicant/wpa_supplicant.conf \
                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
   ln -sfn ../usr/share/zoneinfo/America/New_York etc/localtime

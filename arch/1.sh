@@ -105,30 +105,13 @@ EOF
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
+    for i in nvidia fonts-windows aws; do
     (
       cd /tmp
-      curl -Ls https://github.com/sigaev/nvidia/tarball/HEAD | tar xz
-      cd sigaev-nvidia-*
-      install -m755 xorg.conf /etc/X11/xorg.conf
-      make
-      cd /usr/lib64
-      tar c * | tar xC ../lib
-      cd /usr/lib/opengl/nvidia/lib
-      mv * /usr/lib/
-      cd ../extensions
-      mv * /usr/lib/xorg/modules/extensions/
-
-      cd /tmp
-      curl -Ls https://github.com/sigaev/fonts-windows/tarball/HEAD | tar xz
-      cd sigaev-fonts-windows-*
-      make
-
-      cd /tmp
-      curl -Ls https://github.com/sigaev/aws/tarball/HEAD | tar xz
-      cd sigaev-aws-*
-      make
+      curl -Ls https://github.com/sigaev/$i/tarball/HEAD | tar xz
+      cd sigaev-$i-* && make && rm -fr `pwd`
     )
-    rm -fr /usr/lib{64,/opengl} /tmp/sigaev-{nvidia,fonts-windows,aws}-*
+    done
 EOF
   )
   kill-chroot-processes

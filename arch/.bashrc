@@ -11,7 +11,7 @@ kexec-reload() {
                         {if (a == $1 + 1 && \$1 != \"menuentry\" &&
                              \$1 != \"}\") print}" \
          /boot/grub2/grub.cfg | \
-         sed 's,^[ ]*set ,,;s,linux,echo,;s,initrd,true,'))
+         sed 's,^[ \t]*set ,,;s,linux,echo,;s,initrd,true,'))
   local g=/boot`cut -d\  -f1 <<<$e`
   tee /var/tmp/kexec-reload <<EOF
 exec /usr/bin/kexec -l $g --initrd=${g%vmlinuz.efi}initrd.lz \\

@@ -100,7 +100,8 @@ EOF
     pacman --noconfirm -Syu
     pacman --noconfirm -S iw wpa_supplicant ntp alsa-utils base-devel vim \
                           xfce4 xorg-server kexec-tools git cpio wget \
-                          xf86-input-libinput btrfs-progs graphviz
+                          xf86-input-libinput btrfs-progs graphviz xorg-xhost \
+                          squashfs-tools rsync
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
@@ -121,8 +122,13 @@ EOF
       curl -Ls https://github.com/sigaev/fonts-windows/tarball/HEAD | tar xz
       cd sigaev-fonts-windows-*
       make
+
+      cd /tmp
+      curl -Ls https://github.com/sigaev/aws/tarball/HEAD | tar xz
+      cd sigaev-aws-*
+      make
     )
-    rm -fr /usr/lib{64,/opengl} /tmp/sigaev-{nvidia,fonts-windows}-*
+    rm -fr /usr/lib{64,/opengl} /tmp/sigaev-{nvidia,fonts-windows,aws}-*
 EOF
   )
   kill-chroot-processes

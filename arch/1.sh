@@ -32,14 +32,14 @@
   cd *
   dir=`mktemp -dp tmp`
   mount {-t,}tmpfs $dir
-  sed -i /$host/s,^.,, etc/pacman.d/mirrorlist
-  sed -i 's,^SigLevel.*,SigLevel = Optional TrustAll,' etc/pacman.conf
-  for i in $mounts; do mount -B {/,}$i; done
   keys_exist=false
   if [[ -e /etc/pacman.d/gnupg ]]; then
     keys_exist=true
     cp -a /etc/pacman.d/gnupg etc/pacman.d/
   fi
+  sed -i /$host/s,^.,, etc/pacman.d/mirrorlist
+  $keys_exist || sed -i 's,^SigLevel.*,SigLevel = Optional TrustAll,' etc/pacman.conf
+  for i in $mounts; do mount -B {/,}$i; done
   chroot . bash <(cat <<EOF
     $keys_exist || pacman-key --init
     pacstrap $dir base

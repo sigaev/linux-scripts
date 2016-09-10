@@ -15,7 +15,7 @@
 
 (
   host=lug.mtu.edu
-  url=$host/archlinux/iso/2016.08.01/archlinux-bootstrap-2016.08.01-x86_64.tar.gz
+  url=$host/archlinux/iso/2016.09.03/archlinux-bootstrap-2016.09.03-x86_64.tar.gz
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 
@@ -35,8 +35,13 @@
   sed -i /$host/s,^.,, etc/pacman.d/mirrorlist
   sed -i 's,^SigLevel.*,SigLevel = Optional TrustAll,' etc/pacman.conf
   for i in $mounts; do mount -B {/,}$i; done
+  keys_exist=false
+  if [[ -e /etc/pacman.d/gnupg ]]; then
+    keys_exist=true
+    cp -a /etc/pacman.d/gnupg etc/pacman.d/
+  fi
   chroot . bash <(cat <<EOF
-    pacman-key --init
+    $keys_exist || pacman-key --init
     pacstrap $dir base
 EOF
   )
@@ -46,6 +51,7 @@ EOF
   umount $mounts && cd .. && rm -fr `pwd`
 
   cd /$dir
+  $keys_exist && cp -a /etc/pacman.d/gnupg etc/pacman.d/
   cat >etc/systemd/system/boot.mount <<EOF
 [Unit]
 Description=Boot Directory
@@ -96,20 +102,22 @@ WantedBy=kexec.target
 EOF
   for i in $mounts; do mount -B {/,}$i; done
   chroot . bash <(cat <<EOF
-    pacman-key --populate archlinux
-    pacman --noconfirm -Syu
-    pacman --noconfirm -S iw wpa_supplicant ntp alsa-utils base-devel vim \
-                          xfce4 xorg-server kexec-tools git cpio wget \
-                          xf86-input-libinput btrfs-progs graphviz xorg-xhost \
-                          squashfs-tools rsync
+    $keys_exist || pacman-key --populate archlinux
+    pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
+                            xfce4 xorg-server kexec-tools git cpio wget \
+                            xf86-input-libinput btrfs-progs graphviz xorg-xhost \
+                            squashfs-tools rsync
+    for i in linux; do
+      pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
+    done
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     for i in nvidia fonts-windows aws; do
     (
       cd /tmp
-      curl -Ls https://github.com/sigaev/$i/tarball/HEAD | tar xz
-      cd sigaev-$i-* && make && rm -fr `pwd`
+      curl -Ls https://github.com/sigaev/\$i/tarball/HEAD | tar xz
+      cd sigaev-\$i-* && make && rm -fr \`pwd\`
     )
     done
 EOF
@@ -119,6 +127,8 @@ EOF
   ln -sfn /mnt/secret/etc/wpa_supplicant/wpa_supplicant.conf \
                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
   ln -sfn ../usr/share/zoneinfo/America/New_York etc/localtime
+  mkdir usr/lib/modules
+  ln -sfn modules/firmware usr/lib/firmware
   cat >>etc/fstab <<EOF
 none       /     auto  noatime,ssd,discard,compress=zlib              0 1
 LABEL=home /home auto  noatime,ssd,discard,compress=zlib,subvol=arch  0 2
@@ -137,7 +147,7 @@ EOF
     cd etc/systemd/system
     ln -sfn /etc/systemd/system/autologin\@.service \
              getty.target.wants/getty\@tty1.service
-    git apply <<EOF
+    git apply <<'EOF'
 diff --git a/autologin@.service b/autologin@.service
 index 9b99f95..2c90aa5 100644
 --- a/autologin@.service

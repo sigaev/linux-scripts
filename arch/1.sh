@@ -130,7 +130,7 @@ EOF
   mkdir usr/lib/modules
   ln -sfn modules/firmware usr/lib/firmware
   cat >>etc/fstab <<EOF
-none       /     auto  noatime,ssd,discard,compress=zlib              0 1
+none       /     auto  noatime,ssd,discard,compress=zlib              0 0
 LABEL=home /home auto  noatime,ssd,discard,compress=zlib,subvol=arch  0 2
 LABEL=home /mnt  auto  noatime,ssd,discard,compress=zlib              0 2
 EOF

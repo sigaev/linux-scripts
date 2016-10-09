@@ -113,7 +113,7 @@ EOF
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
-    for i in nvidia fonts-windows aws; do
+    for i in nvidia fonts-windows aws cryptmount; do
     (
       cd /tmp
       curl -Ls https://github.com/sigaev/\$i/tarball/HEAD | tar xz

@@ -106,7 +106,7 @@ EOF
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
                             xfce4 xorg-server kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
-                            squashfs-tools rsync
+                            squashfs-tools rsync noto-fonts-cjk
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -143,15 +143,13 @@ DHCP=ipv4
 EOF
   cp usr/lib/systemd/system/getty\@.service \
          etc/systemd/system/autologin\@.service
-  (
-    cd etc/systemd/system
-    ln -sfn /etc/systemd/system/autologin\@.service \
-             getty.target.wants/getty\@tty1.service
-    git apply <<'EOF'
-diff --git a/autologin@.service b/autologin@.service
+  ln -sfn /etc/systemd/system/autologin\@.service \
+           etc/systemd/system/getty.target.wants/getty\@tty1.service
+  git apply <<'EOF'
+diff --git a/etc/systemd/system/autologin@.service b/etc/systemd/system/autologin@.service
 index 9b99f95..2c90aa5 100644
---- a/autologin@.service
-+++ b/autologin@.service
+--- a/etc/systemd/system/autologin@.service
++++ b/etc/systemd/system/autologin@.service
 @@ -30,7 +30,7 @@ ConditionPathExists=/dev/tty0
  
  [Service]
@@ -161,8 +159,21 @@ index 9b99f95..2c90aa5 100644
  Type=idle
  Restart=always
  RestartSec=0
+diff --git a/etc/sudoers b/etc/sudoers
+index c1563c9..cf39e88 100644
+--- a/etc/sudoers
++++ b/etc/sudoers
+@@ -78,8 +78,7 @@
+ ##
+ root ALL=(ALL) ALL
+ 
+-## Uncomment to allow members of group wheel to execute any command
+-# %wheel ALL=(ALL) ALL
++%eng ALL=(ALL) ALL
+ 
+ ## Same thing without a password
+ # %wheel ALL=(ALL) NOPASSWD: ALL
 EOF
-  )
 
   rm -fr var/cache/pacman/pkg/*
 )

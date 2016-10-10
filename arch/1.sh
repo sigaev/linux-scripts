@@ -4,7 +4,7 @@
 # 1. Update "url" below.
 # 2. Run.
 # 3. Run "mount". There should be exactly one new mount (let's call it $MNT).
-# 4. From AUR, install google-chrome and compiz.
+# 4. From AUR, install google-chrome and compiz (see 2.sh).
 # 5. Copy $MNT to a new Btrfs snapshot.
 # 6. Add the new boot option. Example kernel command line:
 #    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
@@ -15,7 +15,7 @@
 
 (
   host=lug.mtu.edu
-  url=$host/archlinux/iso/2016.09.03/archlinux-bootstrap-2016.09.03-x86_64.tar.gz
+  url=$host/archlinux/iso/2016.10.01/archlinux-bootstrap-2016.10.01-x86_64.tar.gz
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 
@@ -27,7 +27,10 @@
     done
   }
 
-  cd `mktemp -d`
+  old_dir=`mktemp -d`
+  mount {-t,}tmpfs $old_dir
+  mount --make-private $old_dir
+  cd $old_dir
   wget -qO- $url | tar xz
   cd *
   dir=`mktemp -dp tmp`
@@ -48,7 +51,7 @@ EOF
   kill-chroot-processes
   mkdir /$dir
   mount -M {,/}$dir
-  umount $mounts && cd .. && rm -fr `pwd`
+  umount $mounts && cd ../.. && umount $old_dir && rmdir $old_dir
 
   cd /$dir
   $keys_exist && cp -a /etc/pacman.d/gnupg etc/pacman.d/

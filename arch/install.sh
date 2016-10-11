@@ -4,15 +4,17 @@
 # 1. Update "url" below.
 # 2. Run.
 # 3. Run "mount". There should be exactly one new mount (let's call it $MNT).
-# 4. From AUR, install google-chrome and compiz (see 2.sh).
-# 5. Copy $MNT to a new Btrfs snapshot.
-# 6. Add the new boot option. Example kernel command line:
+# 4. Copy $MNT to a new Btrfs snapshot.
+# 5. Add the new boot option. Example kernel command line:
 #    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
 #    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
 #    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
 #    systemd.setenv=SUBVOL_BOOT=64-16.04
-# 7. Think about how to eliminate step (4).
+#
+# To use compiz:
+# xfconf-query -c xfce4-session -p /sessions/Failsafe/Client0_Command -sa compiz
 
+install_log=`mktemp`
 (
   host=lug.mtu.edu
   url=$host/archlinux/iso/2016.10.01/archlinux-bootstrap-2016.10.01-x86_64.tar.gz
@@ -27,6 +29,7 @@
     done
   }
 
+  umask 022
   old_dir=`mktemp -d`
   mount {-t,}tmpfs $old_dir
   mount --make-private $old_dir
@@ -104,6 +107,8 @@ ExecStart=/usr/bin/bash /var/tmp/kexec-reload
 WantedBy=kexec.target
 EOF
   for i in $mounts; do mount -B {/,}$i; done
+  pipe=`mktemp -up tmp`
+  mkfifo $pipe
   chroot . bash <(cat <<EOF
     $keys_exist || pacman-key --populate archlinux
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
@@ -116,6 +121,17 @@ EOF
     systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
+    echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
+    echo 'cd var/tmp
+          for i in compiz google-chrome; do
+            curl -s https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
+            (cd \$i && makepkg --noconfirm -s)
+          done' >$pipe &
+    su sigaev -c 'bash $pipe'
+    wait
+    find var/tmp -name '*.pkg.tar.xz' | xargs -r pacman --noconfirm -U
+    rm -fr $pipe etc/sudoers.d/tmp var/{tmp,cache/pacman/pkg}/*
+    pacman -Qtdq | xargs -r pacman --noconfirm -Rns
     for i in nvidia fonts-windows aws cryptmount; do
     (
       cd /tmp
@@ -178,5 +194,11 @@ index c1563c9..cf39e88 100644
  # %wheel ALL=(ALL) NOPASSWD: ALL
 EOF
 
-  rm -fr var/cache/pacman/pkg/*
+  echo /$dir
+) 2>&1 | tee $install_log
+(
+  umask 022
+  install_log_xz=`tail -n1 $install_log`/var/log/install.log.xz
+  xz -c $install_log >$install_log_xz
+  rm -f $install_log
 )

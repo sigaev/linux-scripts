@@ -4,12 +4,14 @@
 # 1. Update "url" below.
 # 2. Run.
 # 3. Run "mount". There should be exactly one new mount (let's call it $MNT).
-# 4. Copy $MNT to a new Btrfs snapshot.
-# 5. Add the new boot option. Example kernel command line:
+# 4. passwd; passwd sigaev
+# 5. Copy $MNT to a new Btrfs snapshot.
+# 6. Add the new boot option. Example kernel command line:
 #    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
 #    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
 #    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
 #    systemd.setenv=SUBVOL_BOOT=64-16.04
+# 7. Think about how to eliminate step (4).
 #
 # To use compiz:
 # xfconf-query -c xfce4-session -p /sessions/Failsafe/Client0_Command -sa compiz
@@ -34,7 +36,7 @@ install_log=`mktemp`
   mount {-t,}tmpfs $old_dir
   mount --make-private $old_dir
   cd $old_dir
-  wget -qO- $url | tar xz
+  curl -Ls $url | tar xz
   cd *
   dir=`mktemp -dp tmp`
   mount {-t,}tmpfs $dir
@@ -124,7 +126,7 @@ EOF
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
     echo 'cd var/tmp
           for i in compiz google-chrome; do
-            curl -s https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
+            curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
             (cd \$i && makepkg --noconfirm -s)
           done' >$pipe &
     su sigaev -c 'bash $pipe'
@@ -139,6 +141,9 @@ EOF
       cd sigaev-\$i-* && make && rm -fr \`pwd\`
     )
     done
+    echo en_US.UTF-8 UTF-8 >etc/locale.gen
+    echo LANG=en_US.UTF-8 >etc/locale.conf
+    locale-gen
 EOF
   )
   kill-chroot-processes
@@ -164,7 +169,7 @@ EOF
          etc/systemd/system/autologin\@.service
   ln -sfn /etc/systemd/system/autologin\@.service \
            etc/systemd/system/getty.target.wants/getty\@tty1.service
-  git apply <<'EOF'
+  patch -p1 <<'EOF'
 diff --git a/etc/systemd/system/autologin@.service b/etc/systemd/system/autologin@.service
 index 9b99f95..2c90aa5 100644
 --- a/etc/systemd/system/autologin@.service
@@ -178,21 +183,9 @@ index 9b99f95..2c90aa5 100644
  Type=idle
  Restart=always
  RestartSec=0
-diff --git a/etc/sudoers b/etc/sudoers
-index c1563c9..cf39e88 100644
---- a/etc/sudoers
-+++ b/etc/sudoers
-@@ -78,8 +78,7 @@
- ##
- root ALL=(ALL) ALL
- 
--## Uncomment to allow members of group wheel to execute any command
--# %wheel ALL=(ALL) ALL
-+%eng ALL=(ALL) ALL
- 
- ## Same thing without a password
- # %wheel ALL=(ALL) NOPASSWD: ALL
 EOF
+  (umask 077; echo '%eng ALL=(ALL) ALL' >etc/sudoers.d/eng)
+  echo nameserver 8.8.8.8 >etc/resolv.conf
 
   echo /$dir
 ) 2>&1 | tee $install_log

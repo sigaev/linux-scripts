@@ -116,7 +116,7 @@ EOF
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
                             xfce4 xorg-server kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
-                            squashfs-tools rsync noto-fonts-cjk
+                            squashfs-tools rsync noto-fonts-cjk tk
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -183,6 +183,16 @@ index 9b99f95..2c90aa5 100644
  Type=idle
  Restart=always
  RestartSec=0
+EOF
+  cat >etc/X11/xorg.conf.d/30-keyboard.conf <<'EOF'
+Section "InputClass"
+  Identifier "Keyboard0"
+  Option "XkbModel" "pc104"
+  Option "XkbLayout" "us,ru"
+  Option "XkbVariant" "winkeys"
+  Option "XkbOptions" "grp:caps_toggle"
+  MatchIsKeyboard "on"
+EndSection
 EOF
   (umask 077; echo '%eng ALL=(ALL) ALL' >etc/sudoers.d/eng)
   echo nameserver 8.8.8.8 >etc/resolv.conf

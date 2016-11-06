@@ -18,8 +18,8 @@
 
 install_log=`mktemp`
 (
-  host=lug.mtu.edu
-  url=$host/archlinux/iso/2016.10.01/archlinux-bootstrap-2016.10.01-x86_64.tar.gz
+  host=mirrors.lug.mtu.edu
+  url=$host/archlinux/iso/2016.11.01/archlinux-bootstrap-2016.11.01-x86_64.tar.gz
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 
@@ -113,10 +113,14 @@ EOF
   mkfifo $pipe
   chroot . bash <(cat <<EOF
     $keys_exist || pacman-key --populate archlinux
+    echo en_US.UTF-8 UTF-8 >etc/locale.gen
+    echo LANG=en_US.UTF-8 >etc/locale.conf
+    locale-gen
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
                             xfce4 xorg-server kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
-                            squashfs-tools rsync noto-fonts-cjk tk unrar eog
+                            squashfs-tools rsync noto-fonts-cjk tk unrar eog \
+                            evince
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -141,9 +145,6 @@ EOF
       cd sigaev-\$i-* && make && rm -fr \`pwd\`
     )
     done
-    echo en_US.UTF-8 UTF-8 >etc/locale.gen
-    echo LANG=en_US.UTF-8 >etc/locale.conf
-    locale-gen
 EOF
   )
   kill-chroot-processes

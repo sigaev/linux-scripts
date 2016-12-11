@@ -19,7 +19,7 @@
 install_log=`mktemp`
 (
   host=mirrors.lug.mtu.edu
-  url=$host/archlinux/iso/2016.11.01/archlinux-bootstrap-2016.11.01-x86_64.tar.gz
+  url=$host/archlinux/iso/2016.12.01/archlinux-bootstrap-2016.12.01-x86_64.tar.gz
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 
@@ -33,13 +33,13 @@ install_log=`mktemp`
 
   umask 022
   old_dir=`mktemp -d`
-  mount {-t,}tmpfs $old_dir
+  mount -omode=755 {-t,}tmpfs $old_dir
   mount --make-private $old_dir
   cd $old_dir
   curl -Ls $url | tar xz
   cd *
   dir=`mktemp -dp tmp`
-  mount {-t,}tmpfs $dir
+  mount -omode=755 {-t,}tmpfs $dir
   keys_exist=false
   if [[ -e /etc/pacman.d/gnupg ]]; then
     keys_exist=true

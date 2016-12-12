@@ -199,6 +199,49 @@ index 9b99f95..2c90aa5 100644
  Restart=always
  RestartSec=0
 EOF
+  cat >etc/X11/xorg.conf <<'EOF'
+Section "ServerLayout"
+    Identifier     "Default Layout"
+    Screen         "Screen[0]" 0 0
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+EndSection
+
+Section "InputDevice"
+    Identifier     "Keyboard0"
+    Driver         "keyboard"
+EndSection
+
+Section "InputDevice"
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "Monitor"
+    Identifier     "Monitor[0]"
+    VendorName     "Oracle Corporation"
+    ModelName      "VirtualBox Virtual Output"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    Option         "RegistryDwords" "EnableBrightnessControl=1"
+    VendorName     "NVIDIA Corporation"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen[0]"
+    Device         "Device[0]"
+    Monitor        "Monitor[0]"
+    SubSection     "Display"
+    EndSubSection
+EndSection
+EOF
   cat >etc/X11/xorg.conf.d/30-keyboard.conf <<'EOF'
 Section "InputClass"
   Identifier "Keyboard0"

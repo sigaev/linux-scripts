@@ -108,6 +108,20 @@ ExecStart=/usr/bin/bash /var/tmp/kexec-reload
 [Install]
 WantedBy=kexec.target
 EOF
+  cat >etc/systemd/system/pkg.service <<EOF
+[Unit]
+Description=packages that come with the kernel
+Documentation=man:makepkg(8)
+ConditionVirtualization=!container
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c 'exec pacman -U --force --needed --noconfirm /usr/lib/modules/pkg/*'
+
+[Install]
+WantedBy=multi-user.target
+EOF
   for i in $mounts; do mount -B {/,}$i; done
   pipe=`mktemp -up tmp`
   mkfifo $pipe
@@ -124,7 +138,7 @@ EOF
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
-    systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
+    systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload pkg
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
@@ -138,7 +152,7 @@ EOF
     find var/tmp -name '*.pkg.tar.xz' | xargs -r pacman --noconfirm -U
     rm -fr $pipe etc/sudoers.d/tmp var/{tmp,cache/pacman/pkg}/*
     pacman -Qtdq | xargs -r pacman --noconfirm -Rns
-    for i in nvidia fonts-windows aws cryptmount; do
+    for i in fonts-windows aws cryptmount; do
     (
       cd /tmp
       curl -Ls https://github.com/sigaev/\$i/tarball/HEAD | tar xz

@@ -18,6 +18,7 @@
 
 install_log=`mktemp`
 (
+  set -x
   host=mirrors.lug.mtu.edu
   url=$host/archlinux/iso/2016.12.01/archlinux-bootstrap-2016.12.01-x86_64.tar.gz
   mounts="proc dev sys etc/resolv.conf"

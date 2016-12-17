@@ -118,7 +118,7 @@ After=local-fs.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/bash -c 'exec pacman -U --force --needed --noconfirm /usr/lib/modules/pkg/*'
+ExecStart=/usr/bin/bash -c 'yes | pacman -U --needed --confirm /usr/lib/modules/pkg/*'
 
 [Install]
 WantedBy=multi-user.target

@@ -20,7 +20,8 @@ install_log=`mktemp`
   set -x
   host=mirrors.lug.mtu.edu
   url=$host/archlinux/iso/latest
-  url=$url/`curl -Ls $url/sha1sums.txt | grep -m1 x86_64 | awk '{print $2}'`
+  sha1name=`curl -Ls $url/sha1sums.txt | grep -m1 x86_64`
+  name=`awk '{print $2}' <<<$sha1name`
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 
@@ -37,7 +38,10 @@ install_log=`mktemp`
   mount -omode=755 {-t,}tmpfs $old_dir
   mount --make-private $old_dir
   cd $old_dir
-  curl -Ls $url | tar xz
+  curl -Lso$name $url/$name
+  sha1sum -c - <<<$sha1name
+  tar xzf $name
+  rm -f $name
   cd *
   dir=`mktemp -dp tmp`
   mount -omode=755 {-t,}tmpfs $dir

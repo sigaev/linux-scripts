@@ -1,17 +1,16 @@
 # This installs Arch into a newly created temporary directory.
 #
 # How to use:
-# 1. Update "url" below.
-# 2. Run.
-# 3. Run "mount". There should be exactly one new mount (let's call it $MNT).
-# 4. passwd; passwd sigaev
-# 5. Copy $MNT to a new Btrfs snapshot.
-# 6. Add the new boot option. Example kernel command line:
+# 1. Run.
+# 2. Run "mount". There should be exactly one new mount (let's call it $MNT).
+# 3. passwd; passwd sigaev
+# 4. Copy $MNT to a new Btrfs snapshot.
+# 5. Add the new boot option. Example kernel command line:
 #    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
 #    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
 #    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
 #    systemd.setenv=SUBVOL_BOOT=64-16.04
-# 7. Think about how to eliminate step (4).
+# 6. Think about how to eliminate step (3).
 #
 # To use compiz:
 # xfconf-query -c xfce4-session -p /sessions/Failsafe/Client0_Command -sa compiz
@@ -20,7 +19,8 @@ install_log=`mktemp`
 (
   set -x
   host=mirrors.lug.mtu.edu
-  url=$host/archlinux/iso/2016.12.01/archlinux-bootstrap-2016.12.01-x86_64.tar.gz
+  url=$host/archlinux/iso/latest
+  url=$url/`curl -Ls $url/sha1sums.txt | grep -m1 x86_64 | awk '{print $2}'`
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
 

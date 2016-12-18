@@ -38,7 +38,7 @@ install_log=`mktemp`
   mount -omode=755 {-t,}tmpfs $old_dir
   mount --make-private $old_dir
   cd $old_dir
-  curl -Lso$name $url/$name
+  curl {-Lso,$url/}$name
   sha1sum -c - <<<$sha1name
   tar xzf $name
   rm -f $name
@@ -53,11 +53,8 @@ install_log=`mktemp`
   sed -i /$host/s,^.,, etc/pacman.d/mirrorlist
   $keys_exist || sed -i 's,^SigLevel.*,SigLevel = Optional TrustAll,' etc/pacman.conf
   for i in $mounts; do mount -B {/,}$i; done
-  chroot . bash <(cat <<EOF
-    $keys_exist || pacman-key --init
-    pacstrap $dir base
-EOF
-  )
+  chroot . bash -c "$keys_exist || pacman-key --init
+                    pacstrap $dir base"
   kill-chroot-processes
   mkdir /$dir
   mount -M {,/}$dir
@@ -131,6 +128,7 @@ EOF
   pipe=`mktemp -up tmp`
   mkfifo $pipe
   chroot . bash <(cat <<EOF
+    set -x
     $keys_exist || pacman-key --populate archlinux
     echo en_US.UTF-8 UTF-8 >etc/locale.gen
     echo LANG=en_US.UTF-8 >etc/locale.conf
@@ -147,7 +145,8 @@ EOF
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
-    echo 'cd var/tmp
+    echo 'set -x
+          cd var/tmp
           for i in compiz google-chrome; do
             curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
             (cd \$i && makepkg --noconfirm -s)

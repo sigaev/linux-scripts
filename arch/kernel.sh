@@ -15,20 +15,27 @@ install_log=`mktemp`
   mkdir $dir/{r,u,w}
   mount {-t,}overlay -olowerdir=/,upperdir=$dir/u,workdir=$dir/w $dir/r
   rm -fr $dir/r/{usr/lib/firmware,var/cache/pacman/pkg}
-  systemd-nspawn -D$dir/r --bind=/usr/lib/modules/pkg:/mnt bash -c \
-    'for i in /mnt/*; do tar xOJf $i .PKGINFO; done | grep ^pkgname | cut "-d " -f3 | xargs pacman --noconfirm -Rdd
-     pacman --noconfirm -Syu linux nvidia{,-libgl,-settings}'
+  kernel_pkg=`for i in /usr/lib/modules/pkg/*; do
+                tar xOJf $i .PKGINFO
+              done | grep ^pkgname | cut -d\  -f3 | xargs`
+  systemd-nspawn -D$dir/r bash -c "pacman --noconfirm -Rdd $kernel_pkg
+                                   pacman --noconfirm -Syu linux nvidia{,-libgl,-settings}"
   umount $dir/r
-  (
-    cd $dir
-    mkdir pkg
-    rm -f u/var/cache/pacman/pkg/nvidia-[0-9]*
-    mv u/usr/lib/{firmware,modules/*} .
-    mv u/boot/initramfs-linux-fallback.img initrd.lz
-    mv u/boot/vmlinuz-linux vmlinuz.efi
-    mv u/var/cache/pacman/pkg/{libglvnd,libxnvctrl,nvidia}-* pkg/
-    rm -fr r u w
-  )
+
+  cd $dir
+  mkdir pkg
+  rm -f u/var/cache/pacman/pkg/nvidia-[0-9]*
+  mv u/usr/lib/{firmware,modules/*} .
+  mv u/boot/initramfs-linux-fallback.img initrd.lz
+  mv u/boot/vmlinuz-linux vmlinuz.efi
+  mv u/var/cache/pacman/pkg/{libglvnd,libxnvctrl,nvidia}-* pkg/
+  rm -fr r u w
+
+  systemd-nspawn -xD/ --bind-ro={/usr/lib/modules,$dir/pkg:/mnt} bash -c \
+    "echo -e '\n'THIS COMMAND MUST REPLACE ALL OF THESE, WITHOUT DOWNLOADING ANYTHING: $kernel_pkg'\n'
+     yes | pacman --confirm -U /mnt/*
+     echo -e '\n'THIS COMMAND MUST REMOVE ALL THE PACKAGES JUST INSTALLED, AND RESTORE ALL OF THESE, WITHOUT DOWNLOADING ANYTHING: $kernel_pkg'\n'
+     yes | pacman --confirm -U /usr/lib/modules/pkg/*"
 
   echo $dir
 ) 2>&1 | tee $install_log

@@ -147,7 +147,7 @@ EOF
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
     echo 'set -x
           cd var/tmp
-          for i in compiz google-chrome; do
+          for i in compiz google-chrome icaclient; do
             curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
             (cd \$i && makepkg --noconfirm -s)
           done' >$pipe &

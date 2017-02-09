@@ -147,8 +147,10 @@ EOF
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
     echo 'set -x
           cd var/tmp
+          git clone -n https://aur.archlinux.org/icaclient.git icaclient
+          git -C icaclient checkout -b _ bc09d7c24ed8076b882cdb5243c6cb83086d4fd6
           for i in compiz google-chrome icaclient; do
-            curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
+            [[ -e \$i ]] || curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
             (cd \$i && makepkg --noconfirm -s)
           done' >$pipe &
     su sigaev -c 'bash $pipe'

@@ -263,6 +263,7 @@ EndSection
 EOF
   (umask 077; echo '%eng ALL=(ALL) ALL' >etc/sudoers.d/eng)
   echo nameserver 8.8.8.8 >etc/resolv.conf
+  rm -f usr/lib/xorg/modules/extensions/libglx.so
 
   echo /$dir
 ) 2>&1 | tee $install_log

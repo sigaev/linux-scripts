@@ -134,7 +134,7 @@ EOF
     echo LANG=en_US.UTF-8 >etc/locale.conf
     locale-gen
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
-                            xfce4 xorg-server kexec-tools git cpio wget \
+                            xfce4 xorg-server{,-utils} kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python

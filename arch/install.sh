@@ -20,7 +20,7 @@ install_log=`mktemp`
   set -x
   host=mirrors.lug.mtu.edu
   url=$host/archlinux/iso/latest
-  sha1name=`curl -Ls $url/sha1sums.txt | grep -m1 x86_64`
+  sha1name=`curl -Ls $url/sha1sums.txt | grep -m1 tar`
   name=`awk '{print $2}' <<<$sha1name`
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
@@ -40,7 +40,7 @@ install_log=`mktemp`
   cd $old_dir
   curl {-Lso,$url/}$name
   sha1sum -c - <<<$sha1name
-  tar xzf $name
+  tar xaf $name
   rm -f $name
   cd *
   dir=`mktemp -dp tmp`
@@ -134,10 +134,10 @@ EOF
     echo LANG=en_US.UTF-8 >etc/locale.conf
     locale-gen
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
-                            xfce4 xorg-server{,-utils} kexec-tools git cpio wget \
+                            xfce4 xorg-server kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
-                            evince libvdpau mplayer python
+                            evince libvdpau mplayer python jansson
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -150,8 +150,12 @@ EOF
           git clone -n https://aur.archlinux.org/icaclient.git icaclient
           git -C icaclient checkout -b _ bc09d7c24ed8076b882cdb5243c6cb83086d4fd6
           for i in compiz google-chrome icaclient; do
-            [[ -e \$i ]] || curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
-            (cd \$i && makepkg --noconfirm -s)
+            if [[ -e \$i ]]; then
+              (cd \$i && makepkg --noconfirm --skipchecksums -s)
+            else
+              curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
+              (cd \$i && makepkg --noconfirm -s)
+            fi
           done' >$pipe &
     su sigaev -c 'bash $pipe'
     wait
@@ -263,7 +267,7 @@ EndSection
 EOF
   (umask 077; echo '%eng ALL=(ALL) ALL' >etc/sudoers.d/eng)
   echo nameserver 8.8.8.8 >etc/resolv.conf
-  rm -f usr/lib/xorg/modules/extensions/libglx.so
+  rm -f usr/lib/{xorg/modules/extensions/libglx.so,libGLX_indirect.so.0}
 
   echo /$dir
 ) 2>&1 | tee $install_log

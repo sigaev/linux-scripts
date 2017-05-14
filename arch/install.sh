@@ -134,7 +134,7 @@ EOF
     echo LANG=en_US.UTF-8 >etc/locale.conf
     locale-gen
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
-                            xfce4 xorg-server kexec-tools git cpio wget \
+                            xfce4 xorg-{server,xset,xrandr} kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python jansson
@@ -147,15 +147,10 @@ EOF
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
     echo 'set -x
           cd var/tmp
-          git clone -n https://aur.archlinux.org/icaclient.git icaclient
-          git -C icaclient checkout -b _ bc09d7c24ed8076b882cdb5243c6cb83086d4fd6
-          for i in compiz google-chrome icaclient; do
-            if [[ -e \$i ]]; then
-              (cd \$i && makepkg --noconfirm --skipchecksums -s)
-            else
-              curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
-              (cd \$i && makepkg --noconfirm -s)
-            fi
+          wget s3.amazonaws.com/sigaev/linux/icaclient-99.9-1-x86_64.pkg.tar.xz
+          for i in compiz google-chrome; do
+            curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
+            (cd \$i && makepkg --noconfirm -s)
           done' >$pipe &
     su sigaev -c 'bash $pipe'
     wait

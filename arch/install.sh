@@ -133,7 +133,7 @@ EOF
     echo en_US.UTF-8 UTF-8 >etc/locale.gen
     echo LANG=en_US.UTF-8 >etc/locale.conf
     locale-gen
-    pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim \
+    pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim cscope \
                             xfce4 xorg-{server,xset,xrandr} kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \

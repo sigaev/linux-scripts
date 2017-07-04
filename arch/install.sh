@@ -23,7 +23,7 @@ install_log=`mktemp`
   sha1name=`curl -Ls $url/sha256sums.txt | grep -m1 tar`
   name=`awk '{print $2}' <<<$sha1name`
   mounts="proc dev sys etc/resolv.conf"
-  wifi=wlp3s0
+  wifi=wlp1s0
 
   kill-chroot-processes() {
     while true; do
@@ -110,20 +110,6 @@ ExecStart=/usr/bin/bash /var/tmp/kexec-reload
 [Install]
 WantedBy=kexec.target
 EOF
-  cat >etc/systemd/system/pkg.service <<EOF
-[Unit]
-Description=packages that come with the kernel
-Documentation=man:makepkg(8)
-ConditionVirtualization=!container
-After=local-fs.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/bash -c 'yes | pacman -U --needed --confirm /usr/lib/modules/pkg/*'
-
-[Install]
-WantedBy=multi-user.target
-EOF
   for i in $mounts; do mount -B {/,}$i; done
   pipe=`mktemp -up tmp`
   mkfifo $pipe
@@ -143,7 +129,7 @@ EOF
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
-    systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload pkg
+    systemctl enable ntpd "wpa_supplicant@$wifi" systemd-networkd {boot,usr-lib-modules}.mount kexec-reload
     groupadd -g 5000 eng
     useradd -g eng -u 172504 sigaev
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
@@ -177,12 +163,12 @@ EOF
   ln -sfn /mnt/secret/etc/wpa_supplicant/wpa_supplicant.conf \
                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
   ln -sfn ../usr/share/zoneinfo/America/Los_Angeles etc/localtime
-  mkdir usr/lib/modules
+  mkdir efi usr/lib/modules
   ln -sfn modules/firmware usr/lib/firmware
   cat >>etc/fstab <<EOF
-none       /     auto  noatime,ssd,discard,compress=zlib              0 0
-LABEL=home /home auto  noatime,ssd,discard,compress=zlib,subvol=arch  0 2
-LABEL=home /mnt  auto  noatime,ssd,discard,compress=zlib              0 2
+none       /     auto  noatime,ssd              0 0
+PARTLABEL=EFI\\040system\\040partition /efi auto ro,noatime 0 2
+LABEL=root /home auto  noatime,ssd,subvol=home  0 2
 EOF
   cat >etc/systemd/network/wireless.network <<EOF
 [Match]
@@ -197,49 +183,6 @@ EOF
            etc/systemd/system/getty.target.wants/getty\@tty1.service
   sed -i 's,^ExecStart.*$,ExecStart=-/sbin/agetty -a sigaev --noclear %I $TERM,' etc/systemd/system/autologin\@.service
   sed -i s,Restart=always,Restart=no, etc/systemd/system/autologin\@.service
-  cat >etc/X11/xorg.conf <<'EOF'
-Section "ServerLayout"
-    Identifier     "Default Layout"
-    Screen         "Screen[0]" 0 0
-    InputDevice    "Keyboard0" "CoreKeyboard"
-    InputDevice    "Mouse0" "CorePointer"
-EndSection
-
-Section "InputDevice"
-    Identifier     "Keyboard0"
-    Driver         "keyboard"
-EndSection
-
-Section "InputDevice"
-    Identifier     "Mouse0"
-    Driver         "mouse"
-    Option         "Protocol" "auto"
-    Option         "Device" "/dev/psaux"
-    Option         "Emulate3Buttons" "no"
-    Option         "ZAxisMapping" "4 5"
-EndSection
-
-Section "Monitor"
-    Identifier     "Monitor[0]"
-    VendorName     "Oracle Corporation"
-    ModelName      "VirtualBox Virtual Output"
-EndSection
-
-Section "Device"
-    Identifier     "Device0"
-    Driver         "nvidia"
-    Option         "RegistryDwords" "EnableBrightnessControl=1"
-    VendorName     "NVIDIA Corporation"
-EndSection
-
-Section "Screen"
-    Identifier     "Screen[0]"
-    Device         "Device[0]"
-    Monitor        "Monitor[0]"
-    SubSection     "Display"
-    EndSubSection
-EndSection
-EOF
   cat >etc/X11/xorg.conf.d/30-keyboard.conf <<'EOF'
 Section "InputClass"
   Identifier "Keyboard0"
@@ -252,7 +195,6 @@ EndSection
 EOF
   (umask 077; echo '%eng ALL=(ALL) ALL' >etc/sudoers.d/eng)
   echo nameserver 8.8.8.8 >etc/resolv.conf
-  rm -f usr/lib/{xorg/modules/extensions/libglx.so,libGLX_indirect.so.0}
 
   echo /$dir
 ) 2>&1 | tee $install_log

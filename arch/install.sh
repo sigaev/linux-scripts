@@ -5,12 +5,9 @@
 # 2. Run "mount". There should be exactly one new mount (let's call it $MNT).
 # 3. passwd; passwd sigaev
 # 4. Copy $MNT to a new Btrfs snapshot.
-# 5. Add the new boot option. Example kernel command line:
-#    BOOT_IMAGE=/boot/vmlinuz.efi audit=0 \
-#    modprobe.blacklist=evbug,nouveau,nvidiafb root=LABEL=root \
-#    rootflags=noatime,ssd,discard,compress=zlib,subvol=2016-09-03-arch-rw \
-#    systemd.setenv=SUBVOL_BOOT=64-16.04
-# 6. Think about how to eliminate step (3).
+# 5. Add the new boot option to /boot/grub2/grub.cfg.
+# 6. k=4.14.39; u=2018-05-03; efibootmgr -d /dev/nvme0n1 -c -L "arch $k $u" -l $k-vmlinuz.efi -u "audit=0 modprobe.blacklist=evbug,nouveau,nvidiafb,intel_ish_ipc root=LABEL=root rootflags=noatime,ssd,subvol=$u-arch-rw systemd.setenv=SUBVOL_BOOT=64-$k-rw initrd=$k-initrd.lz"
+# 7. Think about how to eliminate step (3).
 #
 # To use compiz:
 # xfconf-query -c xfce4-session -p /sessions/Failsafe/Client0_Command -sa compiz
@@ -160,8 +157,8 @@ EOF
   )
   kill-chroot-processes
   umount $mounts
-  ln -sfn /mnt/secret/etc/wpa_supplicant/wpa_supplicant.conf \
-                      etc/wpa_supplicant/wpa_supplicant-$wifi.conf
+  ln -sfn /home/secret/etc/wpa_supplicant/wpa_supplicant.conf \
+                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
   ln -sfn ../usr/share/zoneinfo/America/Los_Angeles etc/localtime
   mkdir efi usr/lib/modules
   ln -sfn modules/firmware usr/lib/firmware

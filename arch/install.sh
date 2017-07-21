@@ -137,7 +137,7 @@ EOF
                             xfce4 xorg-{server,xset,xrandr} kexec-tools git cpio wget \
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
-                            evince libvdpau mplayer python jansson
+                            evince libvdpau mplayer python jansson efibootmgr openssh
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done

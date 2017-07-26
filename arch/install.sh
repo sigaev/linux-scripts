@@ -138,7 +138,7 @@ EOF
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python jansson efibootmgr openssh \
-                            bazel
+                            bazel cmake
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -151,7 +151,7 @@ EOF
           wget s3.amazonaws.com/sigaev/linux/icaclient-99.9-1-x86_64.pkg.tar.xz
           for i in compiz google-chrome; do
             curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
-            (cd \$i && makepkg --noconfirm -s)
+            (cd \$i && sed -i "s,^ *make$,make -j$(grep -c ^processor /proc/cpuinfo)," PKGBUILD && makepkg --noconfirm -s)
           done' >$pipe &
     su sigaev -c 'bash $pipe'
     wait

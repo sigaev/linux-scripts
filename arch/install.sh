@@ -190,24 +190,8 @@ EOF
          etc/systemd/system/autologin\@.service
   ln -sfn /etc/systemd/system/autologin\@.service \
            etc/systemd/system/getty.target.wants/getty\@tty1.service
-  patch -p1 <<'EOF'
-diff --git a/etc/systemd/system/autologin@.service b/etc/systemd/system/autologin@.service
-index 9b99f95..2c90aa5 100644
---- a/etc/systemd/system/autologin@.service
-+++ b/etc/systemd/system/autologin@.service
-@@ -30,9 +30,9 @@
- 
- [Service]
- # the VT is cleared by TTYVTDisallocate
--ExecStart=-/sbin/agetty --noclear %I $TERM
-+ExecStart=-/sbin/agetty -a sigaev --noclear %I $TERM
- Type=idle
--Restart=always
-+Restart=no
- RestartSec=0
- UtmpIdentifier=%I
- TTYPath=/dev/%I
-EOF
+  sed -i 's,^ExecStart.*$,ExecStart=-/sbin/agetty -a sigaev --noclear %I $TERM,' etc/systemd/system/autologin\@.service
+  sed -i s,Restart=always,Restart=no, etc/systemd/system/autologin\@.service
   cat >etc/X11/xorg.conf <<'EOF'
 Section "ServerLayout"
     Identifier     "Default Layout"

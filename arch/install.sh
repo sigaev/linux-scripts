@@ -138,7 +138,7 @@ EOF
                             xf86-input-libinput btrfs-progs graphviz xorg-xhost \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python jansson efibootmgr openssh \
-                            bazel cmake go clang gdb
+                            bazel cmake go clang gdb dosfstools
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -165,6 +165,8 @@ EOF
       cd sigaev-\$i-* && make && rm -fr \`pwd\`
     )
     done
+    mkdir -p var/cache/fontconfig/sigaev
+    chown sigaev:eng var/vache/fontconfig/sigaev
 EOF
   )
   kill-chroot-processes

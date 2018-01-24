@@ -166,7 +166,7 @@ EOF
     )
     done
     mkdir -p var/cache/fontconfig/sigaev
-    chown sigaev:eng var/vache/fontconfig/sigaev
+    chown sigaev:eng var/cache/fontconfig/sigaev
 EOF
   )
   kill-chroot-processes

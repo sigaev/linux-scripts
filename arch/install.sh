@@ -165,6 +165,7 @@ EOF
       cd sigaev-\$i-* && make && rm -fr \`pwd\`
     )
     done
+    bash <(curl https://sdk.cloud.google.com) --disable-prompts --install-dir=opt/google
     mkdir -p var/cache/fontconfig/sigaev
     chown sigaev:eng var/cache/fontconfig/sigaev
 EOF

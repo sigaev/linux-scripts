@@ -174,7 +174,7 @@ EOF
   umount $mounts
   ln -sfn /mnt/secret/etc/wpa_supplicant/wpa_supplicant.conf \
                       etc/wpa_supplicant/wpa_supplicant-$wifi.conf
-  ln -sfn ../usr/share/zoneinfo/America/New_York etc/localtime
+  ln -sfn ../usr/share/zoneinfo/America/Los_Angeles etc/localtime
   mkdir usr/lib/modules
   ln -sfn modules/firmware usr/lib/firmware
   cat >>etc/fstab <<EOF

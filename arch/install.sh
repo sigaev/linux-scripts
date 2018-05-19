@@ -166,7 +166,7 @@ EOF
     )
     done
     bash <(curl https://sdk.cloud.google.com) --disable-prompts --install-dir=opt/google
-    opt/google/google-cloud-sdk/bin/gcloud components install --quiet kubectl
+    opt/google/google-cloud-sdk/bin/gcloud components install --quiet app-engine-go kubectl
     mkdir -p var/cache/fontconfig/sigaev
     chown sigaev:eng var/cache/fontconfig/sigaev
 EOF

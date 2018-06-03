@@ -50,6 +50,7 @@ install_log=`mktemp`
   sed -i /$host/s,^.,, etc/pacman.d/mirrorlist
   $keys_exist || sed -i 's,^SigLevel.*,SigLevel = Optional TrustAll,' etc/pacman.conf
   for i in $mounts; do mount -B {/,}$i; done
+  mkdir -p run/shm
   chroot . bash -c "$keys_exist || pacman-key --init
                     pacstrap $dir base"
   kill-chroot-processes
@@ -123,6 +124,16 @@ EOF
                             evince libvdpau mplayer python ipython jansson efibootmgr \
                             openssh bazel cmake go clang gdb dosfstools tensorflow \
                             python-tensorflow libxslt
+    pacman --noconfirm -Syu python-numpy python-pip docker ansible
+    rm -fr var/lib/docker
+    ln -sfn /root/docker var/lib/docker
+    systemctl enable docker
+    pip install awscli yapf
+    (
+      cd usr/local/bin
+      curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+      chmod +x kubectl
+    )
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
@@ -132,7 +143,6 @@ EOF
     echo 'sigaev ALL=(ALL) NOPASSWD: ALL' >etc/sudoers.d/tmp
     echo 'set -x
           cd var/tmp
-          wget s3.amazonaws.com/sigaev/linux/icaclient-99.9-1-x86_64.pkg.tar.xz
           for i in compiz google-chrome; do
             curl -Ls https://aur.archlinux.org/cgit/aur.git/snapshot/\$i.tar.gz | tar xz
             (cd \$i && sed -i "s,^ *make$,make -j$(grep -c ^processor /proc/cpuinfo)," PKGBUILD && makepkg --noconfirm -s)
@@ -142,15 +152,8 @@ EOF
     find var/tmp -name '*.pkg.tar.zst' | xargs -r pacman --noconfirm -U
     rm -fr $pipe etc/sudoers.d/tmp var/{tmp,cache/pacman/pkg}/*
     pacman -Qtdq | xargs -r pacman --noconfirm -Rns
-    for i in fonts-windows aws cryptmount; do
-    (
-      cd /tmp
-      curl -Ls https://github.com/sigaev/\$i/tarball/HEAD | tar xz
-      cd sigaev-\$i-* && make && rm -fr \`pwd\`
-    )
-    done
     bash <(curl https://sdk.cloud.google.com) --disable-prompts --install-dir=opt/google
-    opt/google/google-cloud-sdk/bin/gcloud components install --quiet app-engine-go kubectl
+    opt/google/google-cloud-sdk/bin/gcloud components install --quiet app-engine-go alpha beta
     mkdir -p var/cache/fontconfig/sigaev
     chown sigaev:eng var/cache/fontconfig/sigaev
 EOF

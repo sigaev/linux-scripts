@@ -19,16 +19,16 @@ install_log=`mktemp`
                 tar xOJf $i .PKGINFO
               done | grep ^pkgname | cut -d\  -f3 | xargs`
   systemd-nspawn -D$dir/r bash -c "pacman --noconfirm -Rdd $kernel_pkg
-                                   pacman --noconfirm -Syu linux nvidia{,-libgl,-settings}"
+                                   pacman --noconfirm -Syu linux nvidia-390xx{,-settings}"
   umount $dir/r
 
   cd $dir
   mkdir pkg
-  rm -f u/var/cache/pacman/pkg/nvidia-[0-9]*
+  rm -f u/var/cache/pacman/pkg/nvidia-390xx-[0-9]*
   mv u/usr/lib/{firmware,modules/*} .
   mv u/boot/initramfs-linux-fallback.img initrd.lz
   mv u/boot/vmlinuz-linux vmlinuz.efi
-  mv u/var/cache/pacman/pkg/{libglvnd,libxnvctrl,nvidia}-* pkg/
+  mv u/var/cache/pacman/pkg/{libxnvctrl,nvidia}-* pkg/
   rm -fr r u w
 
   systemd-nspawn -xD/ --bind-ro={/usr/lib/modules,$dir/pkg:/mnt} bash -c \

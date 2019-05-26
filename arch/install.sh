@@ -139,7 +139,7 @@ EOF
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python ipython jansson efibootmgr \
                             openssh bazel cmake go clang gdb dosfstools tensorflow \
-                            python-tensorflow
+                            python-tensorflow python2
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done

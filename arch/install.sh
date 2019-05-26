@@ -18,8 +18,8 @@
 install_log=`mktemp`
 (
   set -x
-  host=mirrors.lug.mtu.edu
-  url=$host/archlinux/iso/latest
+  host=arch.mirror.constant.com
+  url=https://$host/iso/latest
   sha1name=`curl -Ls $url/sha1sums.txt | grep -m1 tar`
   name=`awk '{print $2}' <<<$sha1name`
   mounts="proc dev sys etc/resolv.conf"

@@ -135,7 +135,7 @@ EOF
     locale-gen
     pacman --noconfirm -Syu iw wpa_supplicant ntp alsa-utils base-devel vim cscope \
                             xfce4 xorg-{server,xset,xrandr} kexec-tools git cpio wget \
-                            xf86-input-libinput btrfs-progs graphviz xorg-xhost \
+                            xf86-input-libinput btrfs-progs graphviz xorg-xhost sudo \
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python ipython jansson efibootmgr \
                             openssh bazel cmake go clang gdb dosfstools tensorflow \

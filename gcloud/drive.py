@@ -1,4 +1,5 @@
 from __future__ import print_function
+import datetime
 import httplib2
 import os
 
@@ -74,13 +75,38 @@ def main():
                                        item.get('size', '-')))
     return service
 
-def upload(service, fname):
-    file_metadata={'name': os.path.basename(fname)}
+def mod_time(fname):
+    return (datetime.datetime(1970, 1, 1) +
+                         datetime.timedelta(microseconds=os.stat(fname).st_mtime_ns // 1000)).strftime(
+                             '%Y-%m-%dT%H:%M:%S.%f+00:00')
+
+def upload(service, fname, parent_id=None):
+    file_metadata={
+        'name': os.path.basename(fname),
+        'modifiedTime': mod_time(fname),
+    }
+    if parent_id is not None:
+        file_metadata['parents'] = [parent_id]
     media = MediaFileUpload(fname)  #, mimetype='application/octet-stream')
     f = service.files().create(body=file_metadata, media_body=media, fields='md5Checksum, id').execute()
+    print('uploaded', fname)
     #f.get('id')
     #u'15FTcr9i1VHW4UgWhk4hn5W5Joe-ww7U3'
     return f
 
+def upload_dir(service, dname, parent_id=None):
+    ids = {dname: parent_id}
+    for d, dirs, files in os.walk(dname):
+        pid = ids[d]
+        p = {} if pid is None else {'parents': [pid]}
+        for dname in dirs:
+            fdname = '{}/{}'.format(d, dname)
+            body = {'name': dname, 'modifiedTime': mod_time(fdname), 'mimeType': 'application/vnd.google-apps.folder'}
+            body.update(p)
+            ids[fdname] = service.files().create(body=body, fields='id').execute().get('id')
+        for fname in files:
+            upload(service, '{}/{}'.format(d, fname), pid)
+
 if __name__ == '__main__':
-    main()
+    service = main()
+    upload_dir(service, 'ls', '1t6bdkHYAGcsIB87yNs2bVUcjbg9n7lyz')

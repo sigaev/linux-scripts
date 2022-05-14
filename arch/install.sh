@@ -44,7 +44,7 @@ install_log=`mktemp`
   rm -f $name
   cd *
   dir=`mktemp -dp tmp`
-  mount -omode=755 {-t,}tmpfs $dir
+  mount -omode=755,size=70% {-t,}tmpfs $dir
   keys_exist=false
   if [[ -e /etc/pacman.d/gnupg ]]; then
     keys_exist=true
@@ -156,7 +156,7 @@ EOF
           done' >$pipe &
     su sigaev -c 'bash $pipe'
     wait
-    find var/tmp -name '*.pkg.tar.xz' | xargs -r pacman --noconfirm -U
+    find var/tmp -name '*.pkg.tar.zst' | xargs -r pacman --noconfirm -U
     rm -fr $pipe etc/sudoers.d/tmp var/{tmp,cache/pacman/pkg}/*
     pacman -Qtdq | xargs -r pacman --noconfirm -Rns
     for i in fonts-windows aws cryptmount; do

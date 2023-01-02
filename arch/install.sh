@@ -20,7 +20,7 @@ install_log=`mktemp`
   set -x
   host=arch.mirror.constant.com
   url=https://$host/iso/latest
-  sha1name=`curl -Ls $url/sha1sums.txt | grep -m1 tar`
+  sha1name=`curl -Ls $url/sha256sums.txt | grep -m1 tar`
   name=`awk '{print $2}' <<<$sha1name`
   mounts="proc dev sys etc/resolv.conf"
   wifi=wlp3s0
@@ -39,7 +39,7 @@ install_log=`mktemp`
   mount --make-private $old_dir
   cd $old_dir
   curl {-Lso,$url/}$name
-  sha1sum -c - <<<$sha1name
+  sha256sum -c - <<<$sha1name
   tar xaf $name
   rm -f $name
   cd *
@@ -139,7 +139,7 @@ EOF
                             squashfs-tools rsync noto-fonts-cjk tk unrar unzip eog \
                             evince libvdpau mplayer python ipython jansson efibootmgr \
                             openssh bazel cmake go clang gdb dosfstools tensorflow \
-                            python-tensorflow python2
+                            python-tensorflow
     for i in linux; do
       pacman --noconfirm -Rs \$i --assume-installed \`pacman -Q \$i | tr \\  =\`
     done
